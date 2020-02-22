@@ -1,4 +1,6 @@
-var textbox = document.getElementById('TextBox1');
+const textbox = document.getElementById('TextBox1');
+const toolbar1 = document.getElementById('TextBox2');
+const toolbar2 = document.getElementById('TextBox3');
 
 function SingleLine()
 {
@@ -8,8 +10,8 @@ function SingleLine()
 
 function DistinctList() {
     try {
-        var ilist = lines(textbox.value);
-        textbox.value = ilistToString(Array.from(new Set(ilist)));
+        var ilist = ToList(textbox.value);
+        textbox.value = FromList(Array.from(new Set(ilist)));
         keyUp(textbox);
     } catch (err) {
         alert(err.message);
@@ -17,16 +19,16 @@ function DistinctList() {
 }
 
 
-function lines(text){
+function ToList(text){
   return text.split(/\n/);
 }
 
 
 function SortList() {
     try {
-        var items = lines(textbox.value);
+        var items = ToList(textbox.value);
         items.sort();
-        textbox.value = ilistToString(items);
+        textbox.value = FromList(items);
         keyUp(textbox);
     } catch (err) {
         alert(err.message);
@@ -52,45 +54,27 @@ function Base64Encode(){
 
 function RemoveXMLNamespace() {
     try {
-        var Text = textbox.value;
-        Text = removePrefexXml(Text);
-        Text = removeXmlns(Text);
-        textbox.value = Text;
+      textbox.value = removeXmlns(removePrefexXml(textbox.value));
     } catch (err) {
         alert(err);
     }
 }
 
 function TrimStart(){
-  var items = lines(textbox.value);
-  for (i = 0; i < items.length; i++) {
-    items[i] = items[i].trimStart();
-  }
-  textbox.value = ilistToString(items);
+  textbox.value = FromList(ToList(textbox.value).map((item)=>{return item.trimStart();}));
 }
 
 function keyUp(txt) {
-  console.log(txt);
-    var ilist = document.getElementById('TextBox1').value.split(/\n/);
-    var serialNumbers = ilist.length;
     document.getElementById('CharCount').innerText = "Chars:" + txt.value.replace(/ /g, '', '').length;
-    document.getElementById('RowsCount').innerText = "Rows: " + serialNumbers;
+    document.getElementById('RowsCount').innerText = "Rows: " + ToList(txt.value).length;
   }
 
 function TrimEnd(){
-  var items = lines(textbox.value);
-  for (i = 0; i < items.length; i++) {
-    items[i] = items[i].trimEnd();
-  }
-  textbox.value = ilistToString(items);
+  textbox.value = FromList(ToList(textbox.value).map((item)=>{return item.trimEnd();}));
 }
 
 function TrimAll(){
-  var items = lines(textbox.value);
-  for (i = 0; i < items.length; i++) {
-    items[i] = items[i].trim();
-  }
-  textbox.value = ilistToString(items);
+textbox.value = FromList(ToList(textbox.value).map((item)=>{return item.trim();}));
 }
 
 function vkxml() {
@@ -131,13 +115,11 @@ function vkcss() {
 
 //toolbar2
 
+
 function txtParse() {
     try {
-        var text = textbox.value;
-        var tb2 = document.getElementById('TextBox2').value;
-        if (tb2 != '') {
-            textbox.value = Parse(text, tb2);
-        }
+        var tb2 = toolbar1.value;
+        if (tb2 != '') { textbox.value = Parse(textbox.value, tb2);}
         keyUp(textbox);
     } catch (err) {
         alert(err.message);
@@ -145,34 +127,22 @@ function txtParse() {
 }
 
 function InsertStart() {
-    var ilist = lines(textbox.value);
-    var insertItem = document.getElementById('TextBox2').value;
-    for (i = 0; i < ilist.length; i++) {
-        if (ilist[i] != "") {
-            ilist[i] = insertItem + ilist[i];
-        }
-    }
-    textbox.value = ilistToString(ilist);
-    keyUp(textbox);
+  const toolbarText = toolbar1.value;
+  textbox.value = FromList(ToList(textbox.value).map((item)=>{return toolbarText + item;}));
+  keyUp(textbox);
 }
 
 function InsertEnd() {
-    var ilist = document.getElementById('TextBox1').value.split(/\n/);
-    var insertItem = document.getElementById('TextBox2').value;
-    for (i = 0; i < ilist.length; i++) {
-        if (ilist[i] != "") {
-            ilist[i] = ilist[i] + insertItem;
-        }
-    }
-    document.getElementById('TextBox1').value = ilistToString(ilist);
-    keyUp(document.getElementById('TextBox1'));
+  const toolbarText = toolbar1.value;
+  textbox.value = FromList(ToList(textbox.value).map((item)=>{return item + toolbarText;}));
+  keyUp(textbox);
 }
 
 //toolbar3
 
 function txtReplace() {
     try {
-        document.getElementById('TextBox1').value = ReplaceAll(document.getElementById('TextBox1').value, document.getElementById('TextBox2').value, document.getElementById('TextBox3').value);
+        textbox.value = ReplaceAll(textbox.value, toolbar1.value, toolbar2.value);
         keyUp(document.getElementById('TextBox1'));
     } catch (err) {
         alert(err.message);
@@ -182,16 +152,16 @@ function txtReplace() {
 //bottom menu
 
 function ClearCS() {
-    document.getElementById('TextBox1').value = "";
-    document.getElementById('TextBox2').value = "";
-    document.getElementById('TextBox3').value = "";
-    keyUp(document.getElementById('TextBox1'));
+  textbox.value = '';
+  toolbar1.value = '';
+  toolbar2.value = '';
+  keyUp(textbox);
+  sessionStorage.clear();
 }
 
 function CopyToClipboard() {
-var s = textbox.value;
   const el = document.createElement('textarea');
-  el.value = s;
+  el.value = textbox.value;
   document.body.appendChild(el);
   el.select();
   document.execCommand('copy');
@@ -202,53 +172,16 @@ var s = textbox.value;
 function downloadFile(extention){
   try {
       var content = textbox.value;
-
-//function download(e, t)
       var d = document.createElement("a");
       d.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(content)), d.setAttribute("download", "output_" + dateString() + "." + extention), d.style.display = "none", document.body.appendChild(d), d.click(), document.body.removeChild(d);
-
-
-
-//      download(".txt", content);
   } catch (err) {
       alert(err.message);
   }
 }
-function downloadtxt() {
-    try {
-        var content = document.getElementById('TextBox1').value;
-        download(".txt", content);
-    } catch (err) {
-        alert(err.message);
-    }
-}
 
-function downloadcsv() {
-    try {
-        var content = document.getElementById('TextBox1').value;
-        download(".csv", content);
-    } catch (err) {
-        alert(err.message);
-    }
-}
-
-function downloadxml() {
-    try {
-        var content = document.getElementById('TextBox1').value;
-        download(".xml", content);
-    } catch (err) {
-        alert(err.message);
-    }
-}
-
-function ilistToString(ilst) {
-    var sb = '';
-    for (i = 0; i < ilst.length; i++) {
-        if ((i == 0 && ilst[i] == "") == false) {
-            sb += ilst[i] + '\n';
-        }
-    }
-    return sb.substring(0, sb.length - 1);
+function FromList(listToJoin) {
+if (listToJoin.length == 0 && listToJoin[0] == '') {return ''};
+return listToJoin.join('\n');
 }
 
 function ReplaceAll(e, l, n) {
@@ -256,16 +189,13 @@ function ReplaceAll(e, l, n) {
     return e.replace(r, n)
 }
 
-function Parse(t, n) {
-    var r = t.split(n);
-    if (0 < r.length)
-        for (i = 1; i < r.length; i++) r[i] = n + r[i];
-    return ilistToString(r)
+function Parse(text, parseItem) {
+  return FromList(text.split(new RegExp(`(?=${parseItem})`, 'g')));
 }
 
 function removePrefexXml(l) {
     var e = l,
-        p = "ABcDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+        p = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
     for (i = 0; i < p.length; i++) e = ReplaceAll(e, "<" + p[i] + ":", "<"), e = ReplaceAll(e, "</" + p[i] + ":", "</"), e = ReplaceAll(e, p[i] + ":nil", "nil"), e = ReplaceAll(e, p[i] + ":type", "type");
     return e
 }
@@ -281,22 +211,30 @@ function removeXmlns(n) {
     return ReplaceAll(e, " >", ">")
 }
 
-
-
-function download(e, t) {
-    var d = document.createElement("a");
-    d.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(t)), d.setAttribute("download", "output_" + dateString() + e), d.style.display = "none", document.body.appendChild(d), d.click(), document.body.removeChild(d)
-}
-
 function dateString() {
-    var x = new Date();
-    return x.getFullYear().toString() + "-" + tcdate((x.getMonth() + 1).toString()) + "-" + tcdate(x.getDate().toString()) + "_" + tcdate(x.getHours().toString()) + "_" + tcdate(x.getMinutes().toString()) + "_" + tcdate(x.getSeconds().toString());
+    const xNow = new Date();
+    return [
+      xNow.getFullYear().toString(), tcdate((xNow.getMonth()+1).toString()), tcdate(xNow.getDate().toString()),
+      tcdate(xNow.getHours().toString()), tcdate(xNow.getMinutes().toString()), tcdate(xNow.getSeconds().toString())
+    ].join('-')
 }
 
-function tcdate(s) {
-    if (s.length == 1) {
-        return '0' + s
-    } else {
-        return s;
-    }
+function tcdate(DigitString) {
+return (DigitString.length ==1 ? '0'+ DigitString : DigitString);
 }
+
+
+//Saves the data to local seasion storage before the refresh button is history
+window.onbeforeunload = function() {
+sessionStorage.setItem('textapp.textarea', textbox.value);
+sessionStorage.setItem('textapp.toolbar1', toolbar1.value);
+sessionStorage.setItem('textapp.toolbar2', toolbar2.value);
+}
+
+
+//OnLoad pulls any values from season storage
+window.onload = (event) => {
+  textbox.value = sessionStorage.getItem('textapp.textarea');
+  toolbar1.value = sessionStorage.getItem('textapp.toolbar1');
+  toolbar2.value = sessionStorage.getItem('textapp.toolbar2');
+};
