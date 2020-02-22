@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Basic Developer Text Editor in a browser">
+    <meta name="author" content="Functionality - Luke Liukonen, Other components to there respected autors">
+    <title>Html Text Editor</title>
+    <!-- Favicons TODO
+<link rel="apple-touch-icon" href="/docs/4.4/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
+<link rel="icon" href="/docs/4.4/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/docs/4.4/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+<link rel="manifest" href="/docs/4.4/assets/img/favicons/manifest.json">
+<link rel="mask-icon" href="/docs/4.4/assets/img/favicons/safari-pinned-tab.svg" color="#563d7c">
+<link rel="icon" href="/docs/4.4/assets/img/favicons/favicon.ico">
+<meta name="msapplication-config" content="/docs/4.4/assets/img/favicons/browserconfig.xml">
+ -->
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <script defer src="./js/fontawesome/all.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="collapse bg-dark" id="navbarHeader">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-8 col-md-7 py-4">
+                        <h4 class="text-white">About</h4>
+                        <p class="text-muted">Developed as a quick string editor that has different bells and whistles then say, notepad++. Implements some common one off items that a developer might need for string editing</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="navbar navbar-dark bg-dark shadow-sm">
+            <div class="container d-flex justify-content-between">
+                <a href="#" class="navbar-brand d-flex align-items-center">
+                    <strong><i class="far fa-edit"></i> Html Text Editor</strong>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main role="main">
+        <div class="album py-5 bg-light">
+            <div class="container ">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-2">
+                                <div class="btn-group-vertical">
+                                    <a type="button" class="btn btn-primary" onclick="SingleLine();">
+                                        <i class="fas fa-compress"></i> Single Line
+                                    </a>
+                                    <a type="button" class="btn btn-primary" onclick="DistinctList();">
+                                        <i class="fas fa-list-ul"></i> Distinct List
+                                    </a>
+                                    <a type="button" class="btn btn-primary" onclick="SortList();">
+                                        <i class="fas fa-list-ol"></i> Sort List
+                                    </a>
+                                    <a type="button" class="btn btn-primary" onclick="ToUpper();">
+                                        <i class="fas fa-chevron-up"></i> Upper Case
+                                    </a>
+                                    <a type="button" class="btn btn-primary" onclick="ToLower();">
+                                        <i class="fas fa-chevron-down"></i> Lower Case
+                                    </a>
+                                    <div class="btn-group">
+                                        <a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-keyboard"></i> Trim
+                                        </a>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item" onclick="TrimStart();">Start</a>
+                                            <a class="dropdown-item" onclick="TrimEnd();">End</a>
+                                            <a class="dropdown-item" onclick="TrimAll();">All</a>
+                                        </div>
+                                    </div>
+                                    <div class="btn-group">
+                                        <a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-keyboard"></i> base64
+                                        </a>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item" onclick="Base64Encode();">Encode</a>
+                                            <a class="dropdown-item" onclick="Base64Decode();">Decode</a>
+                                        </div>
+                                    </div>
+                                    <a type="button" class="btn btn-primary" onclick="RemoveXMLNamespace();">XML NS remove</a>
+                                    <div class="btn-group">
+                                        <a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-file-import"></i> vkBeautify
+                                        </a>
+                                        <div class="dropdown-menu">
+                                            <div class="dropdown-header">VKBeuitify JS</div>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" onclick="vkxml();">xml</a>
+                                            <a class="dropdown-item" onclick="vkjson();">json</a>
+                                            <a class="dropdown-item" onclick="vksql();">Sql</a>
+                                            <a class="dropdown-item" onclick="vkcss();">css</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-10">
+                                <div class="form-group shadow-textarea">
+                                    <textarea class="form-control z-depth-1" id="TextBox1" rows="20" onkeyup="keyUp(this)"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="badge">
+                              <Label ID="RowsCount"></Label>
+                          </span>
+                            <span class="badge">
+                              <Label ID="CharCount"></Label>
+                          </span>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="input-group mb-3">
+                                <input type="text" id="TextBox2" name="TextBox2">
+
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-default" title="Parse" onclick="txtParse(); return false;"><i class="fas fa-cut"></i></button>
+                                    <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#" onclick="InsertStart();"><i class="fas fa-chevron-right"></i>insert Start</a>
+                                        <a class="dropdown-item" href="#" onclick="InsertEnd();"><i class="fas fa-chevron-left"></i>insert End</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="input-group mb-3">
+                                <input type="text" id="TextBox3" name="TextBox3">
+
+                                <div class="input-group-append">
+                                    <button id="btnReplace" onclick="txtReplace();" class="btn btn-default" data-toggle="tooltip" title="Replace">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-warning" onclick="ClearCS(); return false;" title="Clear" id="btnClear"><i class="fas fa-eraser"></i></button>
+                                <button type="button" class="btn btn-success" onclick="CopyToClipboard(); return false;" title="Copy to clipboard" id="btnCopy"><i class="far fa-copy"></i></button>
+
+                                <button type="button" class="btn btn-success dropdown-toggle" title="Save" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="far fa-save"></i><span class="caret"></span>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" onclick="downloadFile('txt'); return false;">TXT</a>
+                                    <a class="dropdown-item" onclick="downloadFile('xml'); return false;">XML</a>
+                                    <a class="dropdown-item" onclick="downloadFile('csv'); return false;">CSV</a>
+                                    <a class="dropdown-item" onclick="downloadFile('json'); return false;">json</a>
+                                    <a class="dropdown-item" onclick="downloadFile('css'); return false;">css</a>
+                                    <a class="dropdown-item" onclick="downloadFile('sql'); return false;">sql</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="text-muted">
+        <div class="container">
+            <p class="float-right">
+                <a href="#">Back to top</a>
+            </p>
+            <p>&copy; Luke Liukonen</p>
+            <p></p>
+        </div>
+    </footer>
+    <script src="./js/TextApp.js"></script>
+    <script src="./js/vkBeautify/vkbeautify.js"></script>
+    <script src="./js/jquery/jquery-3.4.1.slim.min.js"></script>
+    <script src="./js/bootstrap/bootstrap.bundle.min.js"></script>
+</body>
+</html>
