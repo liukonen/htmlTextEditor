@@ -116,9 +116,7 @@
                         </div>
 
                     </div>
-                    <div class="row">
-
-                    </div>
+                    <div class="row"></div>
                 </div>
                 <div class="panel-footer">
                     <div class="row">
@@ -136,12 +134,16 @@
                                 <input type="text" id="TextBox2" name="TextBox2">
 
                                 <div class="input-group-append">
-                                    <a type="button" class="btn btn-default" title="Parse" onclick="txtParse(); return false;"><i class="fas fa-cut"></i></a>
-                                    <a type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+
+                                  <div class="dropdown">
+                                    <a type="button" class="btn btn-primary dropdown-toggle" title="Single Textbox Items" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">edit</a>
                                     <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#" onclick="txtParse(); return false;"><i class="fas fa-cut"></i> Parse Text</a>
                                         <a class="dropdown-item" href="#" onclick="InsertStart();"><i class="fas fa-chevron-right"></i>insert Start</a>
                                         <a class="dropdown-item" href="#" onclick="InsertEnd();"><i class="fas fa-chevron-left"></i>insert End</a>
                                     </div>
+                                  </div>
+
                                 </div>
                             </div>
                         </div>
@@ -151,8 +153,8 @@
                                 <input type="text" id="TextBox3" name="TextBox3">
 
                                 <div class="input-group-append">
-                                    <a id="btnReplace" onclick="txtReplace();" class="btn btn-default" data-toggle="tooltip" title="Replace">
-                                        <i class="fas fa-pencil-alt"></i>
+                                    <a  onclick="txtReplace();" class="btn btn-primary" data-toggle="tooltip" title="Replace">
+                                        replace
                                     </a>
                                 </div>
                             </div>
@@ -160,8 +162,8 @@
 
                         <div class="col-md-4">
                             <div class="btn-group">
-                                <a type="button" class="btn btn-warning" onclick="ClearCS(); return false;" title="Clear" id="btnClear"><i class="fas fa-eraser"></i> clear</a>
-                                <a type="button" class="btn btn-success" onclick="CopyToClipboard(); return false;" title="Copy to clipboard" id="btnCopy"><i class="far fa-copy"></i> copy</a>
+                                <a type="button" class="btn btn-warning" onclick="ClearCS(); return false;" title="Clear"><i class="fas fa-eraser"></i> clear</a>
+                                <a type="button" class="btn btn-success" onclick="CopyToClipboard(); return false;" title="Copy to clipboard"><i class="far fa-copy"></i> copy</a>
                                 <div class="dropdown">
                                 <a type="button" class="btn btn-success dropdown-toggle" title="Save" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="far fa-save"></i><span class="caret"> save as</span>
