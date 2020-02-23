@@ -18,11 +18,7 @@ function DistinctList() {
     }
 }
 
-
-function ToList(text){
-  return text.split(/\n/);
-}
-
+function ToList(text){return text.split(/\n/);}
 
 function SortList() {
     try {
@@ -43,14 +39,10 @@ function ToLower() {
     textbox.value = textbox.value.toLowerCase();
 }
 
-function Base64Decode(){
-  textbox.value = atob(textbox.value);
-}
+function Base64Decode(){textbox.value = atob(textbox.value);}
 
 
-function Base64Encode(){
-  textbox.value = btoa(textbox.value);
-}
+function Base64Encode(){textbox.value = btoa(textbox.value);}
 
 function RemoveXMLNamespace() {
     try {
@@ -77,45 +69,55 @@ function TrimAll(){
 textbox.value = FromList(ToList(textbox.value).map((item)=>{return item.trim();}));
 }
 
-function vkxml() {
-    try {
-        textbox.value = vkbeautify.xml(textbox.value);
-    } catch (err) {
-        alert(err.message);
-    }
+
+function vk(type)
+{
+try{
+  switch(type) {
+  case "xml":
+    textbox.value = vkbeautify.xml(textbox.value); break;
+  case "json":
+    textbox.value = vkbeautify.json(textbox.value); break;
+    case "sql":
+    textbox.value = vkbeautify.sql(textbox.value); break;
+    case "css":
+    textbox.value = vkbeautify.css(textbox.value); break;
+    default:
+  }
+  keyUp(textbox);
+}
+  catch(err){alert(err.message);}
 }
 
-function vkjson() {
-    try {
-        textbox.value = vkbeautify.json(textbox.value);
-        keyUp(textbox);
-    } catch (err) {
-        alert(err.message);
-    }
+function getDistintItemsFromLists()
+{
+  const Lists = getLists();
+  const dist1 = Lists.L1.filter((obj)=> { return Lists.L2.indexOf(obj) == -1; });
+  const dist2 = Lists.L2.filter((obj)=> { return Lists.L1.indexOf(obj) == -1; });
+  textbox.value = FromList(dist2) + "\n\n" + FromList(dist1);
+  keyUp(textbox);
 }
 
-
-function vksql() {
-    try {
-        textbox.value = vkbeautify.sql(textbox.value);
-        keyUp(textbox);
-    } catch (err) {
-        alert(err.message);
-    }
+function getMatchingItemsFromLists()
+{
+  const Lists = getLists();
+  textbox.value = FromList(Lists.L1.filter((obj)=>{return Lists.L2.includes(obj);}));
+  keyUp(textbox);
 }
 
-function vkcss() {
-    try {
-        textbox.value = vkbeautify.css(textbox.value);
-        keyUp(textbox);
-    } catch (err) {
-        alert(err.message);
-    }
+function getLists(){
+  const Lines = ToList(textbox.value);
+  const list1 = [];
+  const list2 = [];
+  var HasHit = false;
+  for (const line of Lines) {
+    if (line == ''){HasHit = true;} //skip over all empty lines
+    else{ if (HasHit){list1.push(line);}else{list2.push(line);}}
+  }
+  return {L1: list1, L2:list2};
 }
 
 //toolbar2
-
-
 function txtParse() {
     try {
         var tb2 = toolbar1.value;
@@ -150,7 +152,6 @@ function txtReplace() {
 }
 
 //bottom menu
-
 function ClearCS() {
   textbox.value = '';
   toolbar1.value = '';
@@ -223,12 +224,52 @@ function tcdate(DigitString) {
 return (DigitString.length ==1 ? '0'+ DigitString : DigitString);
 }
 
+function SaveToCache()
+{
+  const ExistingStorage = ReadCache();
+  ExistingStorage.push({key: dateString(), value:textbox.value});
+  SetCache(ExistingStorage);
+  RefreshCacheDropdown();
+}
+
+function ClearCache()
+{
+localStorage.removeItem('CachedItems');
+RefreshCacheDropdown();
+}
+
+function ReadCache(){return JSON.parse(localStorage.getItem('CachedItems')) || [];}
+function SetCache(s){localStorage.setItem('CachedItems', JSON.stringify(s));}
+function RefreshCacheDropdown()
+{
+  const Doc = document.getElementById("CacheList");
+  const ExistingStorage = ReadCache();
+  const temp = document.getElementsByTagName("template")[0];
+
+  Doc.innerHTML = "";
+  item = temp.content.querySelector("a");
+  for (i = 0; i < ExistingStorage.length; i++) {
+      a = document.importNode(item, true);
+      a.textContent = ExistingStorage[i].key;
+      a.setAttribute('onclick',"ReadItem('" + ExistingStorage[i].key +"')");
+      Doc.appendChild(a);
+    }
+}
+
+function ReadItem(s)
+{
+  const ExistingStorage = ReadCache();
+  const X = ExistingStorage.filter(item => item.key == s)[0];
+  textbox.value = X.value;
+}
+
 
 //Saves the data to local seasion storage before the refresh button is history
 window.onbeforeunload = function() {
 sessionStorage.setItem('textapp.textarea', textbox.value);
 sessionStorage.setItem('textapp.toolbar1', toolbar1.value);
 sessionStorage.setItem('textapp.toolbar2', toolbar2.value);
+
 }
 
 
@@ -237,4 +278,5 @@ window.onload = (event) => {
   textbox.value = sessionStorage.getItem('textapp.textarea');
   toolbar1.value = sessionStorage.getItem('textapp.toolbar1');
   toolbar2.value = sessionStorage.getItem('textapp.toolbar2');
+  RefreshCacheDropdown();
 };

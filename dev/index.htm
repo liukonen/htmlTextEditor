@@ -37,9 +37,9 @@
                 <a href="#" class="navbar-brand d-flex align-items-center">
                     <strong><i class="far fa-edit"></i> Html Text Editor</strong>
                 </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
-                </button>
+                </a>
             </div>
         </div>
     </header>
@@ -51,6 +51,7 @@
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-2">
+
                                 <div class="btn-group-vertical">
                                     <a type="button" class="btn btn-primary" onclick="SingleLine();">
                                         <i class="fas fa-compress"></i> Single Line
@@ -94,13 +95,18 @@
                                         <div class="dropdown-menu">
                                             <div class="dropdown-header">VKBeuitify JS</div>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" onclick="vkxml();">xml</a>
-                                            <a class="dropdown-item" onclick="vkjson();">json</a>
-                                            <a class="dropdown-item" onclick="vksql();">Sql</a>
-                                            <a class="dropdown-item" onclick="vkcss();">css</a>
+                                            <a class="dropdown-item" onclick="vk('xml');">xml</a>
+                                            <a class="dropdown-item" onclick="vk('json');">json</a>
+                                            <a class="dropdown-item" onclick="vk('sql');">Sql</a>
+                                            <a class="dropdown-item" onclick="vk('css');">css</a>
                                         </div>
                                     </div>
+                                    <a type="button" class="btn btn-primary" onclick="getDistintItemsFromLists()" title="Gets unique items from two lists seperated by an empty line">Lists Unique</a>
+                                    <a type="button" class="btn btn-primary" onclick="getMatchingItemsFromLists()" title="Gets matching items from two lists seperated by an empty line">Lists match</a>
+
                                 </div>
+
+
                             </div>
                             <div class="col-10">
                                 <div class="form-group shadow-textarea">
@@ -116,7 +122,7 @@
                 </div>
                 <div class="panel-footer">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <span class="badge">
                               <Label ID="RowsCount"></Label>
                           </span>
@@ -130,8 +136,8 @@
                                 <input type="text" id="TextBox2" name="TextBox2">
 
                                 <div class="input-group-append">
-                                    <button type="button" class="btn btn-default" title="Parse" onclick="txtParse(); return false;"><i class="fas fa-cut"></i></button>
-                                    <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                                    <a type="button" class="btn btn-default" title="Parse" onclick="txtParse(); return false;"><i class="fas fa-cut"></i></a>
+                                    <a type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
                                     <div class="dropdown-menu">
                                         <a class="dropdown-item" href="#" onclick="InsertStart();"><i class="fas fa-chevron-right"></i>insert Start</a>
                                         <a class="dropdown-item" href="#" onclick="InsertEnd();"><i class="fas fa-chevron-left"></i>insert End</a>
@@ -145,21 +151,21 @@
                                 <input type="text" id="TextBox3" name="TextBox3">
 
                                 <div class="input-group-append">
-                                    <button id="btnReplace" onclick="txtReplace();" class="btn btn-default" data-toggle="tooltip" title="Replace">
+                                    <a id="btnReplace" onclick="txtReplace();" class="btn btn-default" data-toggle="tooltip" title="Replace">
                                         <i class="fas fa-pencil-alt"></i>
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-md-2">
+                        <div class="col-md-4">
                             <div class="btn-group">
-                                <button type="button" class="btn btn-warning" onclick="ClearCS(); return false;" title="Clear" id="btnClear"><i class="fas fa-eraser"></i></button>
-                                <button type="button" class="btn btn-success" onclick="CopyToClipboard(); return false;" title="Copy to clipboard" id="btnCopy"><i class="far fa-copy"></i></button>
-
-                                <button type="button" class="btn btn-success dropdown-toggle" title="Save" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="far fa-save"></i><span class="caret"></span>
-                                </button>
+                                <a type="button" class="btn btn-warning" onclick="ClearCS(); return false;" title="Clear" id="btnClear"><i class="fas fa-eraser"></i> clear</a>
+                                <a type="button" class="btn btn-success" onclick="CopyToClipboard(); return false;" title="Copy to clipboard" id="btnCopy"><i class="far fa-copy"></i> copy</a>
+                                <div class="dropdown">
+                                <a type="button" class="btn btn-success dropdown-toggle" title="Save" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="far fa-save"></i><span class="caret"> save as</span>
+                                </a>
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" onclick="downloadFile('txt'); return false;">TXT</a>
                                     <a class="dropdown-item" onclick="downloadFile('xml'); return false;">XML</a>
@@ -168,6 +174,19 @@
                                     <a class="dropdown-item" onclick="downloadFile('css'); return false;">css</a>
                                     <a class="dropdown-item" onclick="downloadFile('sql'); return false;">sql</a>
                                 </div>
+                              </div>
+                              <div class="dropdown">
+                                <a type="button" class="btn btn-success dropdown-toggle" title="cache" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Cache</a>
+                                <div class="dropdown-menu">
+                                  <a class="dropdown-item" onclick="SaveToCache()">Save To Cache</a>
+                                  <a class="dropdown-item" onclick="ClearCache()">clear Cache</a>
+                                  <div class="dropdown-divider"></div>
+                                  <div id="CacheList"></div>
+                                  <template>
+                                    <a class="dropdown-item" onclick="">item1</a>
+                                  </template>
+                                </div>
+                              </div>
                             </div>
                         </div>
                     </div>
@@ -176,7 +195,6 @@
         </div>
 
     </main>
-
     <footer class="text-muted">
         <div class="container">
             <p class="float-right">
