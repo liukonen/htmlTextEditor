@@ -263,6 +263,24 @@ function ReadItem(s)
   textbox.value = X.value;
 }
 
+//allow the textbox to drag files on it
+//taken from
+function handleFileSelect(eventItem) {
+    eventItem.stopPropagation();
+    eventItem.preventDefault();
+    var reader = new FileReader();
+    reader.onload = function(event) {textbox.value = event.target.result;}
+    reader.readAsText(eventItem.dataTransfer.files[0]);
+  }
+
+  function handleDragOver(eventItem) {
+    eventItem.stopPropagation(); eventItem.preventDefault();
+    eventItem.dataTransfer.dropEffect = 'copy';
+  }
+
+  // Setup the dnd listeners.
+  textbox.addEventListener('dragover', handleDragOver, false);
+  textbox.addEventListener('drop', handleFileSelect, false);
 
 //Saves the data to local seasion storage before the refresh button is history
 window.onbeforeunload = function() {
