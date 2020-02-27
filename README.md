@@ -7,3 +7,12 @@ Thanks to the following
  - the folks with Bootstrap and Bootswatch for CSS and reactive design
  - The developers of jQuery
  - Vadim Kiryukhin for building VKBeautify
+
+|Design patterns or technologies explored|  
+|--|
+| - Functional Programming  |
+| - Local and Web storage|
+| - Client side File reader|
+| - Javascript |
+
+
