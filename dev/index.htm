@@ -7,7 +7,7 @@
     <meta name="description" content="Basic Developer Text Editor in a browser">
     <meta name="author" content="Functionality - Luke Liukonen, Other components to there respected autors">
     <title>Html Text Editor</title>
-
+<style>#OpenFile{display:none}</style>
     <!-- Favicons TODO
 <link rel="apple-touch-icon" href="/docs/4.4/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
 <link rel="icon" href="/docs/4.4/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
@@ -44,7 +44,7 @@
             </div>
         </div>
     </header>
-
+                              <input type="file" id="OpenFile"></input>
     <main role="main">
         <div class="album py-5 bg-light">
             <div class="container ">
@@ -52,8 +52,13 @@
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-2">
+
+                              <br />
                                 <div class="row">
                                 <div class="btn-group-vertical">
+                                    <a type="button" class="btn btn-secondary" id="upload_link" onclick="OpenDialog()">
+                                      <i class="fas fa-folder-open"></i> Open File
+                                    </a>
                                     <a type="button" class="btn btn-primary" onclick="SingleLine();">
                                         <i class="fas fa-compress"></i> Single Line
                                     </a>
@@ -106,7 +111,6 @@
                                     <a type="button" class="btn btn-primary" onclick="getMatchingItemsFromLists()" title="Gets matching items from two lists seperated by an empty line">Lists match</a>
 
                                 </div>
-
                               </div>
 
                             </div>

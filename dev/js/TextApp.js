@@ -256,12 +256,34 @@ function RefreshCacheDropdown()
     }
 }
 
+
+
 function ReadItem(s)
 {
   const ExistingStorage = ReadCache();
   const X = ExistingStorage.filter(item => item.key == s)[0];
   textbox.value = X.value;
 }
+
+function handleFileOpen(eventItem)
+{
+  console.log(eventItem);
+  var file = eventItem.target.files[0];
+    if (!file) {return;}
+    var reader = new FileReader();
+    reader.onload = function(event) {textbox.value =  event.target.result; };
+    reader.readAsText(file);
+
+
+}
+
+function OpenDialog()
+{
+document.getElementById("OpenFile").click();
+
+}
+
+
 
 //allow the textbox to drag files on it
 //taken from
@@ -272,6 +294,7 @@ function handleFileSelect(eventItem) {
     reader.onload = function(event) {textbox.value = event.target.result;}
     reader.readAsText(eventItem.dataTransfer.files[0]);
   }
+  document.getElementById('OpenFile').addEventListener('change', handleFileOpen);
 
   function handleDragOver(eventItem) {
     eventItem.stopPropagation(); eventItem.preventDefault();
