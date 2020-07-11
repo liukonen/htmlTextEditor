@@ -18,6 +18,15 @@ function DistinctList() {
     }
 }
 
+function DupLines(){
+  var Items = ToList(textbox.value);
+  console.log(Items);
+  //let X = Items.forEach(element =>  {element = element.toString() + element.toString();});
+  let X = Items.map(line => line.toString() + line.toString());
+  console.log(X);
+  textbox.value = FromList(X);
+}
+
 function ToList(text){return text.split(/\n/);}
 
 function SortList() {
@@ -256,8 +265,6 @@ function RefreshCacheDropdown()
     }
 }
 
-
-
 function ReadItem(s)
 {
   const ExistingStorage = ReadCache();
@@ -282,8 +289,6 @@ function OpenDialog()
 document.getElementById("OpenFile").click();
 
 }
-
-
 
 //allow the textbox to drag files on it
 //taken from
@@ -313,7 +318,6 @@ sessionStorage.setItem('textapp.toolbar2', toolbar2.value);
 
 }
 
-
 //OnLoad pulls any values from season storage
 window.onload = (event) => {
   textbox.value = sessionStorage.getItem('textapp.textarea');
@@ -321,3 +325,9 @@ window.onload = (event) => {
   toolbar2.value = sessionStorage.getItem('textapp.toolbar2');
   RefreshCacheDropdown();
 };
+
+//Service Worker for PWA
+if ("serviceWorker" in navigator) {
+  // register service worker
+  navigator.serviceWorker.register("./sw.js");
+}

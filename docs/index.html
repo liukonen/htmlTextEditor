@@ -7,44 +7,28 @@
     <meta name="description" content="Basic Developer Text Editor in a browser">
     <meta name="author" content="Functionality - Luke Liukonen, Other components to there respected autors">
     <title>Html Text Editor</title>
-<style>#OpenFile{display:none}</style>
-    <!-- Favicons TODO
-<link rel="apple-touch-icon" href="/docs/4.4/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
-<link rel="icon" href="/docs/4.4/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
-<link rel="icon" href="/docs/4.4/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
-<link rel="manifest" href="/docs/4.4/assets/img/favicons/manifest.json">
-<link rel="mask-icon" href="/docs/4.4/assets/img/favicons/safari-pinned-tab.svg" color="#563d7c">
-<link rel="icon" href="/docs/4.4/assets/img/favicons/favicon.ico">
-<meta name="msapplication-config" content="/docs/4.4/assets/img/favicons/browserconfig.xml">
- -->
-    <link rel="stylesheet" href="./css/bootstrap.min.css">
-    <script defer src="./js/fontawesome/all.min.js"></script>
-</head>
-
-<body>
+    <style>#OpenFile{display:none}</style>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha512-xA6Hp6oezhjd6LiLZynuukm80f8BoZ3OpcEYaqKoCV3HKQDrYjDE1Gu8ocxgxoXmwmSzM4iqPvCsOkQNiu41GA==" crossorigin="anonymous" /></head>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000">
+    <link rel="apple-touch-icon" href="./img/apple-touch-icon.png">
+    <link rel="icon" href="./favicon.ico">
+    <body>
     <header>
-        <div class="collapse bg-dark" id="navbarHeader">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-8 col-md-7 py-4">
-                        <h4 class="text-white">About</h4>
-                        <p class="text-muted">Developed as a quick string editor that has different bells and whistles then say, notepad++. Implements some common one off items that a developer might need for string editing</p>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="navbar navbar-dark bg-dark shadow-sm">
             <div class="container d-flex justify-content-between">
                 <a href="#" class="navbar-brand d-flex align-items-center">
                     <strong><i class="far fa-edit"></i> Html Text Editor</strong>
                 </a>
-                <a class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+                <a type="button" aria-label="Info" data-toggle="modal" data-target="#aboutModal">
+                    <i class="fa fa-info-circle fa-2x" aria-label="Info"></i>
                 </a>
             </div>
         </div>
     </header>
-                              <input type="file" id="OpenFile"></input>
+    
+    <input type="file" id="OpenFile"></input>
     <main role="main">
         <div class="album py-5 bg-light">
             <div class="container ">
@@ -56,59 +40,62 @@
                               <br />
                                 <div class="row">
                                 <div class="btn-group-vertical">
-                                    <a type="button" class="btn btn-secondary" id="upload_link" onclick="OpenDialog()">
+                                    <a type="button" class="btn btn-secondary" id="upload_link" onclick="OpenDialog()" aria-label="Open File">
                                       <i class="fas fa-folder-open"></i> Open File
                                     </a>
-                                    <a type="button" class="btn btn-primary" onclick="SingleLine();">
+                                    <a type="button" class="btn btn-primary" onclick="SingleLine();" aria-label="Single Line">
                                         <i class="fas fa-compress"></i> Single Line
                                     </a>
-                                    <a type="button" class="btn btn-primary" onclick="DistinctList();">
+                                    <a type="button" class="btn btn-primary" onclick="DistinctList();" aria-label="Distinct List">
                                         <i class="fas fa-list-ul"></i> Distinct List
                                     </a>
-                                    <a type="button" class="btn btn-primary" onclick="SortList();">
+                                    <a type="button" class="btn btn-primary" onclick="SortList();" aria-label="Sort List">
                                         <i class="fas fa-list-ol"></i> Sort List
                                     </a>
-                                    <a type="button" class="btn btn-primary" onclick="ToUpper();">
+                                    <a type="button" class="btn btn-primary" onclick="ToUpper();" aria-label="Upper Case">
                                         <i class="fas fa-chevron-up"></i> Upper Case
                                     </a>
-                                    <a type="button" class="btn btn-primary" onclick="ToLower();">
+                                    <a type="button" class="btn btn-primary" onclick="ToLower();" aria-label="Lower Case">
                                         <i class="fas fa-chevron-down"></i> Lower Case
                                     </a>
+                                    <a type="button" class="btn btn-primary" onclick="DupLines()" aria-label="Duplicate Lines">
+                                        <i class="icon-copy"></i> Duplicate lines
+                                    </a>
                                     <div class="btn-group">
-                                        <a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-label="trim" aria-haspopup="true" aria-expanded="false">
                                             <i class="fas fa-keyboard"></i> Trim
                                         </a>
                                         <div class="dropdown-menu">
-                                            <a class="dropdown-item" onclick="TrimStart();">Start</a>
-                                            <a class="dropdown-item" onclick="TrimEnd();">End</a>
-                                            <a class="dropdown-item" onclick="TrimAll();">All</a>
+                                            <a class="dropdown-item" onclick="TrimStart();" aria-label="Trim Start">Start</a>
+                                            <a class="dropdown-item" onclick="TrimEnd();" aria-label="Trim End">End</a>
+                                            <a class="dropdown-item" onclick="TrimAll();" aria-label="Trim All">All</a>
                                         </div>
                                     </div>
                                     <div class="btn-group">
-                                        <a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-label="Base64" aria-haspopup="true" aria-expanded="false">
                                             <i class="fas fa-keyboard"></i> base64
                                         </a>
                                         <div class="dropdown-menu">
-                                            <a class="dropdown-item" onclick="Base64Encode();">Encode</a>
-                                            <a class="dropdown-item" onclick="Base64Decode();">Decode</a>
+                                            <a class="dropdown-item" onclick="Base64Encode();" aria-label="Base 64 encode">Encode</a>
+                                            <a class="dropdown-item" onclick="Base64Decode();" aria-label="Base 64 decode">Decode</a>
                                         </div>
                                     </div>
-                                    <a type="button" class="btn btn-primary" onclick="RemoveXMLNamespace();">XML NS remove</a>
+                                    <a type="button" class="btn btn-primary" onclick="RemoveXMLNamespace();" aria-label="Remove XML Namespace">XML NS remove</a>
                                     <div class="btn-group">
                                         <a type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-file-import"></i> vkBeautify
+                                            <i class="fas fa-file-import"></i> Beautify
                                         </a>
                                         <div class="dropdown-menu">
                                             <div class="dropdown-header">VKBeuitify JS</div>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" onclick="vk('xml');">xml</a>
-                                            <a class="dropdown-item" onclick="vk('json');">json</a>
-                                            <a class="dropdown-item" onclick="vk('sql');">Sql</a>
-                                            <a class="dropdown-item" onclick="vk('css');">css</a>
+                                            <a class="dropdown-item" onclick="vk('xml');" aria-label="XML Pretty">xml</a>
+                                            <a class="dropdown-item" onclick="vk('json');" aria-label="JSON Pretty">json</a>
+                                            <a class="dropdown-item" onclick="vk('sql');" aria-label="SQL Pretty">Sql</a>
+                                            <a class="dropdown-item" onclick="vk('css');" aria-label="CSS Pretty">css</a>
                                         </div>
                                     </div>
-                                    <a type="button" class="btn btn-primary" onclick="getDistintItemsFromLists()" title="Gets unique items from two lists seperated by an empty line">Lists Unique</a>
-                                    <a type="button" class="btn btn-primary" onclick="getMatchingItemsFromLists()" title="Gets matching items from two lists seperated by an empty line">Lists match</a>
+                                    <a type="button" class="btn btn-primary" aria-label="Get Distnct items from 2 lists" onclick="getDistintItemsFromLists()" title="Gets unique items from two lists seperated by an empty line">Lists Unique</a>
+                                    <a type="button" class="btn btn-primary" aria-label="Get matching items from 2 lists" onclick="getMatchingItemsFromLists()" title="Gets matching items from two lists seperated by an empty line">Lists match</a>
 
                                 </div>
                               </div>
@@ -116,7 +103,7 @@
                             </div>
                             <div class="col-10">
                                 <div class="form-group shadow-textarea">
-                                    <textarea class="form-control z-depth-1" id="TextBox1" rows="20" onkeyup="keyUp(this)"></textarea>
+                                    <textarea class="form-control z-depth-1" aria-label="Main Form" id="TextBox1" rows="20" onkeyup="keyUp(this)"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -137,16 +124,16 @@
 
                         <div class="col-md-3">
                             <div class="input-group mb-3">
-                                <input type="text" id="TextBox2" name="TextBox2">
+                                <input type="text" id="TextBox2" aria-label="field 1" name="TextBox2">
 
                                 <div class="input-group-append">
 
                                   <div class="dropdown">
                                     <a type="button" class="btn btn-primary dropdown-toggle" title="Single Textbox Items" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">edit</a>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="#" onclick="txtParse(); return false;"><i class="fas fa-cut"></i> Parse Text</a>
-                                        <a class="dropdown-item" href="#" onclick="InsertStart();"><i class="fas fa-chevron-right"></i>insert Start</a>
-                                        <a class="dropdown-item" href="#" onclick="InsertEnd();"><i class="fas fa-chevron-left"></i>insert End</a>
+                                        <a class="dropdown-item" aria-label="Parse text" href="#" onclick="txtParse(); return false;"><i class="fas fa-cut"></i> Parse Text</a>
+                                        <a class="dropdown-item" aria-label="Insert on Start" href="#" onclick="InsertStart();"><i class="fas fa-chevron-right"></i>insert Start</a>
+                                        <a class="dropdown-item" aria-label="insert on end" href="#" onclick="InsertEnd();"><i class="fas fa-chevron-left"></i>insert End</a>
                                     </div>
                                   </div>
 
@@ -156,10 +143,10 @@
 
                         <div class="col-md-3">
                             <div class="input-group mb-3">
-                                <input type="text" id="TextBox3" name="TextBox3">
+                                <input type="text" id="TextBox3" aria-label="field 2" name="TextBox3">
 
                                 <div class="input-group-append">
-                                    <a  onclick="txtReplace();" class="btn btn-primary" data-toggle="tooltip" title="Replace">
+                                    <a  onclick="txtReplace();" aria-label="replace text" class="btn btn-primary" data-toggle="tooltip" title="Replace">
                                         replace
                                     </a>
                                 </div>
@@ -168,26 +155,26 @@
 
                         <div class="col-md-4">
                             <div class="btn-group">
-                                <a type="button" class="btn btn-warning" onclick="ClearCS(); return false;" title="Clear"><i class="fas fa-eraser"></i> clear</a>
-                                <a type="button" class="btn btn-success" onclick="CopyToClipboard(); return false;" title="Copy to clipboard"><i class="far fa-copy"></i> copy</a>
+                                <a type="button" class="btn btn-warning" aria-label="Clear text" onclick="ClearCS(); return false;" title="Clear"><i class="fas fa-eraser"></i> clear</a>
+                                <a type="button" class="btn btn-success" aria-label="copy to clipboard" onclick="CopyToClipboard(); return false;" title="Copy to clipboard"><i class="far fa-copy"></i> copy</a>
                                 <div class="dropdown">
-                                <a type="button" class="btn btn-success dropdown-toggle" title="Save" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <a type="button" class="btn btn-success dropdown-toggle" aria-label="Save" title="Save" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="far fa-save"></i><span class="caret"> save as</span>
                                 </a>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" onclick="downloadFile('txt'); return false;">TXT</a>
-                                    <a class="dropdown-item" onclick="downloadFile('xml'); return false;">XML</a>
-                                    <a class="dropdown-item" onclick="downloadFile('csv'); return false;">CSV</a>
-                                    <a class="dropdown-item" onclick="downloadFile('json'); return false;">json</a>
-                                    <a class="dropdown-item" onclick="downloadFile('css'); return false;">css</a>
-                                    <a class="dropdown-item" onclick="downloadFile('sql'); return false;">sql</a>
+                                    <a class="dropdown-item" aria-label="save text" onclick="downloadFile('txt'); return false;">TXT</a>
+                                    <a class="dropdown-item" aria-label="save xml" onclick="downloadFile('xml'); return false;">XML</a>
+                                    <a class="dropdown-item" aria-label="save csv" onclick="downloadFile('csv'); return false;">CSV</a>
+                                    <a class="dropdown-item" aria-label="save json" onclick="downloadFile('json'); return false;">json</a>
+                                    <a class="dropdown-item" aria-label="save css" onclick="downloadFile('css'); return false;">css</a>
+                                    <a class="dropdown-item" aria-label="save sql" onclick="downloadFile('sql'); return false;">sql</a>
                                 </div>
                               </div>
                               <div class="dropdown">
                                 <a type="button" class="btn btn-success dropdown-toggle" title="cache" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Cache</a>
                                 <div class="dropdown-menu">
-                                  <a class="dropdown-item" onclick="SaveToCache()">Save To Cache</a>
-                                  <a class="dropdown-item" onclick="ClearCache()">clear Cache</a>
+                                  <a class="dropdown-item" aria-label="save to local cache" onclick="SaveToCache()">Save To Cache</a>
+                                  <a class="dropdown-item" aria-label="clear items from cache" onclick="ClearCache()">clear Cache</a>
                                   <div class="dropdown-divider"></div>
                                   <div id="CacheList"></div>
                                   <template>
@@ -206,16 +193,39 @@
     <footer class="text-muted">
         <div class="container">
             <p class="float-right">
-                <a href="#">Back to top</a>
+                &copy; Luke Liukonen 2020
             </p>
-            <p>&copy; Luke Liukonen</p>
+            <p></p>
             <p></p>
 
         </div>
     </footer>
+    <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">About</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+             App created by Luke Liukonen. <p>copyright 2020. MIT License</p>
+            <p>Developed as a quick string editor that has different bells and whistles then say, notepad++. Implements some common one off items that a developer might need for string editing</p>
+            <p>Info about FavIcon: <div>Icon made by <a href="https://icon54.com/" title="Pixel perfect">Pixel perfect</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div></p>
+            More information can be found at my homepage <a href="https://liukonen.dev" target="_blank">https://liukonen.dev</a>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+            </div>
+        </div>
+    </div>
+
     <script src="./js/TextApp.js"></script>
     <script src="./js/vkBeautify/vkbeautify.js"></script>
-    <script src="./js/jquery/jquery-3.4.1.slim.min.js"></script>
-    <script src="./js/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="./js/jquery/jquery-3.5.1.slim.min.js"></script>
+    <script src="./js/bootstrap/popper.1.16.0.js"></script>
+    <script src="./js/bootstrap/bootstrap.4.5.0.min.js"></script>
 </body>
 </html>
