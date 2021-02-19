@@ -18,6 +18,12 @@ function DistinctList() {
     }
 }
 
+function Speak(){
+  var msg = new SpeechSynthesisUtterance();
+msg.text = textbox.value;
+window.speechSynthesis.speak(msg);
+}
+
 function DupLines(){
   var Items = ToList(textbox.value);
   console.log(Items);
