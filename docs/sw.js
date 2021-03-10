@@ -105,7 +105,6 @@ define("./sw.js", ["./workbox-c692813c"], function (e) {
         },
         { url: "img/text72.png", revision: "3f097390fed13bc06790a1d45def28e2" },
         { url: "img/text96.png", revision: "01384b434aa55d32a068916c60a5a1c0" },
-        { url: "index.html", revision: "802b3af328ba2a4856b45896dd8db5cb" },
         {
           url: "js/bootstrap/bootstrap.4.5.0.min.js",
           revision: "92bbf03bf3fb044c6591ed34881df66d",
