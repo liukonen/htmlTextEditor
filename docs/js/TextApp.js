@@ -72,8 +72,8 @@ function TrimStart(){
 }
 
 function keyUp(txt) {
-    document.getElementById('CharCount').innerText = "Chars:" + txt.value.replace(/ /g, '', '').length;
-    document.getElementById('RowsCount').innerText = "Rows: " + ToList(txt.value).length;
+    document.getElementById('CharCount').innerText = txt.value.replace(/ /g, '', '').length;
+    document.getElementById('RowsCount').innerText = ToList(txt.value).length;
   }
 
 function TrimEnd(){
@@ -332,8 +332,35 @@ window.onload = (event) => {
   RefreshCacheDropdown();
 };
 
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip();
+});
+
+document.getElementById("btnSwitch").addEventListener("click", () => {
+  if (
+    document.documentElement.getAttribute("data-bs-theme") == "dark"
+  ) {
+    document.documentElement.setAttribute("data-bs-theme", "light");
+    localStorage.setItem("theme", "light");
+  } else {
+    document.documentElement.setAttribute("data-bs-theme", "dark");
+    localStorage.setItem("theme", "dark");
+  }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  var themeStyleLink = document.getElementById("theme-style");
+  var currentTheme = localStorage.getItem("theme");
+  if (currentTheme) {
+    document.documentElement.setAttribute(
+      "data-bs-theme",
+      currentTheme
+    );
+  }
+});
+
 //Service Worker for PWA
-if ("serviceWorker" in navigator) {
-  // register service worker
-  navigator.serviceWorker.register("./sw.js");
-}
+ if ("serviceWorker" in navigator) {
+   // register service worker
+   navigator.serviceWorker.register("./serviceWorker.js");
+ }
