@@ -1,669 +1,347 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <meta
-      name="description"
-      content="Basic Developer Text Editor in a browser"
-    />
-    <meta
-      name="author"
-      content="Functionality - Luke Liukonen, Other components to there respected autors"
-    />
-    <title>Html Text Editor</title>
-    <style>
-      #OpenFile {
-        display: none;
-      }
-    </style>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
-      integrity="sha512-t4GWSVZO1eC8BM339Xd7Uphw5s17a86tIZIj8qRxhnKub6WoyhnrxeCIMeAqBPgdZGlCcG2PrZjMc+Wr78+5Xg=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <!-- <link rel="stylesheet" href="css/bootstrap.min.css"> -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <link rel="manifest" href="manifest.json" />
-    <meta name="theme-color" content="#000" />
-    <link rel="apple-touch-icon" href="./img/apple-touch-icon.png" />
-    <link rel="icon" href="./favicon.ico" />
-    <style>
-      #TextBox1 {
-        height: 70vh; /* Set initial height to 80% of viewport height */
-      }
-    </style>
-    <body>
-      <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#">Html Text Editor</a>
-          <button
-            class="navbar-toggler" type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span class="navbar-toggler-icon"></span>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="Basic Developer Text Editor in a browser" />
+  <meta name="author" content="Functionality - Luke Liukonen, Other components to there respected autors" />
+  <title>Html Text Editor</title>
+  <style>
+    #OpenFile {
+      display: none;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+    integrity="sha512-t4GWSVZO1eC8BM339Xd7Uphw5s17a86tIZIj8qRxhnKub6WoyhnrxeCIMeAqBPgdZGlCcG2PrZjMc+Wr78+5Xg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- <link rel="stylesheet" href="css/bootstrap.min.css"> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#000" />
+  <link rel="apple-touch-icon" href="./img/apple-touch-icon.png" />
+  <link rel="icon" href="./favicon.ico" />
+  <style>
+    #TextBox1 {
+      height: 70vh;
+      /* Set initial height to 80% of viewport height */
+    }
+  </style>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Html Text Editor</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0"></ul>
+        <form class="d-flex">
+          <button class="btn btn-dark shadow" id="btnSwitch" data-toggle="tooltip" title="Dark / Light mode">
+            <i class="fa-solid fa-circle-half-stroke"></i>
           </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0"></ul>
-            <form class="d-flex">
-              <button
-                class="btn btn-dark shadow"
-                id="btnSwitch"
-                data-toggle="tooltip"
-                title="Dark / Light mode"
-              >
-                <i class="fa-solid fa-circle-half-stroke"></i>
-              </button>
-              <button
-                aria-label="Info"
-                class="btn btn-dark shadow"
-                data-bs-toggle="modal"
-                data-bs-target="#aboutModal"
-              >
-                <i class="fa fa-info-circle"></i>
-              </button>
-            </form>
-          </div>
-        </div>
-      </nav>
-
-      <input type="file" id="OpenFile" />
-
-      <div class="album py-5 body-bg">
-        <div class="container-fluid">
-          <div class="panel panel-default">
-            <div class="panel-body">
-              <div class="row">
-                <div class="col-lg-1">
-                  <div class="btn-group-vertical shadow-lg">
-                    <button
-                      class="btn btn-secondary"
-                      data-toggle="tooltip"
-                      data-bs-placement="right"
-                      title="Open File"
-                      id="upload_link"
-                      onclick="OpenDialog()"
-                    >
-                      <i class="fas fa-folder-open"></i>
-                    </button>
-                    <button
-                      class="btn btn-primary"
-                      data-toggle="tooltip"
-                      data-bs-placement="right"
-                      title="Single Line"
-                      onclick="SingleLine()"
-                    >
-                      <i class="fas fa-compress"></i>
-                    </button>
-                    <button
-                      class="btn btn-primary"
-                      data-toggle="tooltip"
-                      data-bs-placement="right"
-                      title="Distinct List"
-                      onclick="DistinctList()"
-                      aria-label="Distinct List"
-                    >
-                      <i class="fas fa-list-ul"></i>
-                    </button>
-                    <button
-                      class="btn btn-primary"
-                      data-toggle="tooltip"
-                      data-bs-placement="right"
-                      title="Sort List"
-                      onclick="SortList()"
-                      aria-label="single line"
-                    >
-                      <i class="fa-solid fa-list-ol"></i>
-                    </button>
-                    <button
-                      class="btn btn-primary"
-                      data-toggle="tooltip"
-                      data-bs-placement="right"
-                      title="ToUpper"
-                      onclick="ToUpper()"
-                      aria-label="single line"
-                    >
-                      A
-                    </button>
-                    <button
-                      class="btn btn-primary"
-                      data-toggle="tooltip"
-                      data-bs-placement="right"
-                      title="Lower Case"
-                      onclick="ToLower()"
-                      aria-label="single line"
-                    >
-                      a
-                    </button>
-                    <button
-                      class="btn btn-primary"
-                      data-toggle="tooltip"
-                      data-bs-placement="right"
-                      title="Duplicate lines"
-                      onclick="DupLines()"
-                      aria-label="single line"
-                    >
-                      <i class="fa-solid fa-copy"></i>
-                    </button>
-
-                    <div class="btn-group" role="group">
-                      <button
-                        id="btnGroupVerticalDrop1"
-                        type="button"
-                        class="btn btn-primary dropdown-toggle"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                      >
-                        <i
-                          class="fa-solid fa-scissors"
-                          data-toggle="tooltip"
-                          data-bs-placement="right"
-                          title="trim"
-                        ></i>
-                      </button>
-                      <ul
-                        class="dropdown-menu"
-                        aria-labelledby="btnGroupVerticalDrop1"
-                      >
-                        <li>
-                          <a
-                            class="dropdown-item"
-                            onclick="TrimStart()"
-                            aria-label="Trim Start"
-                            >Start</a
-                          >
-                        </li>
-                        <li>
-                          <a
-                            class="dropdown-item"
-                            onclick="TrimEnd()"
-                            aria-label="Trim End"
-                            >End</a
-                          >
-                        </li>
-                        <li>
-                          <a
-                            class="dropdown-item"
-                            onclick="TrimAll()"
-                            aria-label="Trim All"
-                            >All</a
-                          >
-                        </li>
-                      </ul>
-                    </div>
-                    <div class="btn-group" role="group">
-                      <button
-                        id="btnGroupVerticalDrop2"
-                        type="button"
-                        class="btn btn-primary dropdown-toggle"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                      >
-                        <i
-                          class="fas fa-keyboard"
-                          data-toggle="tooltip"
-                          data-bs-placement="right"
-                          title="Base 64"
-                        ></i>
-                      </button>
-                      <ul
-                        class="dropdown-menu"
-                        aria-labelledby="btnGroupVerticalDrop2"
-                      >
-                        <li>
-                          <a
-                            class="dropdown-item"
-                            onclick="Base64Encode();"
-                            aria-label="Base 64 encode"
-                            >Encode</a
-                          >
-                        </li>
-                        <li>
-                          <a
-                            class="dropdown-item"
-                            onclick="Base64Decode();"
-                            aria-label="Base 64 decode"
-                            >Decode</a
-                          >
-                        </li>
-                      </ul>
-                    </div>
-                    <button
-                      class="btn btn-primary"
-                      onclick="RemoveXMLNamespace()"
-                      data-toggle="tooltip"
-                      data-bs-placement="right"
-                      title="Remove XML Namespaces"
-                    >
-                      <i class="fa-solid fa-code"></i>
-                    </button>
-
-                    <div class="btn-group" role="group">
-                      <button
-                        id="btnGroupVerticalDrop3"
-                        type="button"
-                        class="btn btn-primary dropdown-toggle"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                      >
-                        <i
-                          class="fa-solid fa-face-grin-stars"
-                          data-toggle="tooltip"
-                          data-bs-placement="right"
-                          title="VKBeuitify"
-                        ></i>
-                      </button>
-                      <ul
-                        class="dropdown-menu"
-                        aria-labelledby="btnGroupVerticalDrop3"
-                      >
-                        <li>
-                          <a
-                            class="dropdown-item"
-                            onclick="vk('xml')"
-                            aria-label="XML Pretty"
-                            >xml</a
-                          >
-                        </li>
-                        <li>
-                          <a
-                            class="dropdown-item"
-                            onclick="vk('json')"
-                            aria-label="JSON Pretty"
-                            >json</a
-                          >
-                        </li>
-                        <li>
-                          <a
-                            class="dropdown-item"
-                            onclick="vk('sql')"
-                            aria-label="SQL Pretty"
-                            >Sql</a
-                          >
-                        </li>
-                        <li>
-                          <a
-                            class="dropdown-item"
-                            onclick="vk('css')"
-                            aria-label="CSS Pretty"
-                            >css</a
-                          >
-                        </li>
-                      </ul>
-                    </div>
-
-                    <button
-                      class="btn btn-primary"
-                      data-toggle="tooltip"
-                      data-bs-placement="right"
-                      title="Get Distnct items from 2 lists"
-                      onclick="getDistintItemsFromLists()"
-                    >
-                      <i class="fa-solid fa-arrows-turn-to-dots"></i>
-                    </button>
-                    <button
-                      class="btn btn-primary"
-                      data-toggle="tooltip"
-                      data-bs-placement="right"
-                      title="Get matching items from 2 lists"
-                      onclick="getMatchingItemsFromLists()"
-                    >
-                      <i class="fa-solid fa-code-merge"></i>
-                    </button>
-                    <button
-                      class="btn btn-primary"
-                      data-toggle="tooltip"
-                      data-bs-placement="right"
-                      title="Speak"
-                      onclick="Speak()"
-                    >
-                      <i class="fa-solid fa-volume-high"></i>
-                    </button>
-                  </div>
-
-                  <br />
-                </div>
-                <div class="col-lg-10">
-                  <div class="form-group shadow-textarea">
-                    <textarea
-                      class="form-control z-depth-1 shadow-lg p-3 mb-5 bg-body-tertiary rounded"
-                      aria-label="Main Form"
-                      id="TextBox1"
-                      rows="20"
-                      onkeyup="keyUp(this)"
-                    ></textarea>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row"></div>
-          </div>
-          <div class="panel-footer">
-            <div class="row">
-              <div class="col-md-2"></div>
-
-              <div
-                class="btn-toolbar mb-2"
-                role="toolbar"
-                aria-label="Toolbar with button groups">
-                <div class="btn-group me-3" role="group" aria-label="First group">
-                    <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Rows">
-                  <button
-                    type="button"
-                    class="btn btn-outline-secondary"
-                    id="RowsCount"
-                    disabled
-                  >0</button>
-                </span>
-                <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Characters">
-                  <button
-                    type="button"
-                    class="btn btn-outline-secondary"
-                    id="CharCount"
-                    disabled
-                  >0</button></span>
-                </div>
-                <div class="input-group  me-3">
-                  <input
-                    type="text"
-                    id="TextBox2"
-                    aria-label="field 1"
-                    name="TextBox2"
-                    class="form-control border-primary shadow-lg"
-                  />
-                  <div class="btn-group" role="group">
-                    <button
-                      id="btnGroupVerticalDropBar1"
-                      type="button"
-                      class="btn btn-primary dropdown-toggle"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      <i
-                        class="fa-solid fa-ellipsis"
-                        data-toggle="tooltip"
-                        data-bs-placement="top"
-                        title="edit"
-                      ></i>
-                    </button>
-                    <ul
-                      class="dropdown-menu"
-                      aria-labelledby="btnGroupVerticalDropBar1"
-                    >
-                      <li>
-                        <a
-                          class="dropdown-item"
-                          aria-label="Parse text"
-                          href="#"
-                          onclick="txtParse(); return false;"
-                          ><i class="fas fa-cut"></i> Parse Text</a
-                        >
-                      </li>
-                      <li>
-                        <a
-                          class="dropdown-item"
-                          aria-label="Insert on Start"
-                          href="#"
-                          onclick="InsertStart();"
-                          ><i class="fas fa-chevron-right"></i>insert Start</a
-                        >
-                      </li>
-                      <li>
-                        <a
-                          class="dropdown-item"
-                          aria-label="insert on end"
-                          href="#"
-                          onclick="InsertEnd();"
-                          ><i class="fas fa-chevron-left"></i>insert End</a
-                        >
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div class="input-group  me-3">
-                  <input
-                    type="text"
-                    id="TextBox3"
-                    aria-label="field 2"
-                    name="TextBox3"
-                    class="form-control border-primary shadow"
-                  />
-                  <button
-                    onclick="txtReplace();"
-                    aria-label="replace text"
-                    class="btn btn-primary"
-                    data-toggle="tooltip"
-                    title="Replace"
-                  >
-                    <i class="fa-solid fa-arrow-right-arrow-left"></i>
-                  </button>
-                </div>
-                
-                <button
-                  class="btn btn-warning me-2"
-                  data-toggle="tooltip"
-                  title="Clear text"
-                  onclick="ClearCS(); return false;"
-                >
-                  <i class="fas fa-eraser"></i>
+          <button aria-label="Info" class="btn btn-dark shadow" data-bs-toggle="modal" data-bs-target="#aboutModal">
+            <i class="fa fa-info-circle"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </nav>
+  <input type="file" id="OpenFile" />
+  <div class="album py-3 body-bg">
+    <div class="container-fluid">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-1">
+              <div id="button-group" class="btn-group-vertical shadow-lg">
+                <button class="btn btn-secondary" data-toggle="tooltip" data-bs-placement="right" title="Open File"
+                  id="upload_link" onclick="openDialog()">
+                  <i class="fas fa-folder-open"></i>
                 </button>
-                <button
-                  class="btn btn-secondary  me-2"
-                  data-toggle="tooltip"
-                  title="copy to clipboard"
-                  onclick="CopyToClipboard(); return false;"
-                >
-                  <i class="far fa-copy"></i>
+                <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right" title="Single Line"
+                  onclick="singleLine()">
+                  <i class="fas fa-compress"></i>
+                </button>
+                <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right" title="Distinct List"
+                  onclick="distinctList()" aria-label="Distinct List">
+                  <i class="fas fa-list-ul"></i>
+                </button>
+                <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right" title="Sort List"
+                  onclick="sortList()" aria-label="single line">
+                  <i class="fa-solid fa-list-ol"></i>
+                </button>
+                <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right" title="ToUpper"
+                  onclick="toUpper()" aria-label="single line">
+                  A
+                </button>
+                <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right" title="Lower Case"
+                  onclick="toLower()" aria-label="single line">
+                  a
+                </button>
+                <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right" title="Duplicate lines"
+                  onclick="dupicateLines()" aria-label="single line">
+                  <i class="fa-solid fa-copy"></i>
                 </button>
 
                 <div class="btn-group" role="group">
-                  <button
-                    id="btnGroupVerticalDropBar2"
-                    type="button"
-                    class="btn btn-success dropdown-toggle me-2"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    <i
-                      class="far fa-save"
-                      data-toggle="tooltip"
-                      data-bs-placement="top"
-                      title="SAVE AS"
-                    ></i>
+                  <button id="btnGroupVerticalDrop1" type="button" class="btn btn-primary dropdown-toggle"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-solid fa-scissors" data-toggle="tooltip" data-bs-placement="right" title="trim"></i>
                   </button>
-                  <ul
-                    class="dropdown-menu"
-                    aria-labelledby="btnGroupVerticalDropBar2"
-                  >
+                  <ul class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1">
                     <li>
-                      <a
-                        class="dropdown-item"
-                        aria-label="save text"
-                        onclick="downloadFile('txt'); return false;"
-                        >TXT</a
-                      >
+                      <a class="dropdown-item" onclick="trimText('trimStart')" aria-label="Trim Start">Start</a>
                     </li>
                     <li>
-                      <a
-                        class="dropdown-item"
-                        aria-label="save xml"
-                        onclick="downloadFile('xml'); return false;"
-                        >XML</a
-                      >
+                      <a class="dropdown-item" onclick="trimText('trimEnd')" aria-label="Trim End">End</a>
                     </li>
                     <li>
-                      <a
-                        class="dropdown-item"
-                        aria-label="save csv"
-                        onclick="downloadFile('csv'); return false;"
-                        >CSV</a
-                      >
+                      <a class="dropdown-item" onclick="trimText('trim')" aria-label="Trim All">All</a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="btn-group" role="group">
+                  <button id="btngroupurl" type="button" class="btn btn-primary dropdown-toggle" 
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-solid fa-globe" data-toggle="tooltip" data-bs-placement="right" title="url"></i>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="btngroupurl">
+                    <li>
+                      <a class="dropdown-item" onclick="urlEncode()" aria-label="url encode">Url Encode</a>
+                      <a class="dropdown-item" onclick="urlDecode()" aria-label="url decode">Url decode</a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="btn-group" role="group">
+                  <button id="btnGroupVerticalDrop2" type="button" class="btn btn-primary dropdown-toggle"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-keyboard" data-toggle="tooltip" data-bs-placement="right" title="Base 64"></i>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
+                    <li>
+                      <a class="dropdown-item" onclick="base64Encode();" aria-label="Base 64 encode">Encode</a>
                     </li>
                     <li>
-                      <a
-                        class="dropdown-item"
-                        aria-label="save json"
-                        onclick="downloadFile('json'); return false;"
-                        >json</a
-                      >
+                      <a class="dropdown-item" onclick="base64Decode();" aria-label="Base 64 decode">Decode</a>
+                    </li>
+                  </ul>
+                </div>
+                <button class="btn btn-primary" onclick="removeXMLNamespace()" data-toggle="tooltip"
+                  data-bs-placement="right" title="Remove XML Namespaces">
+                  <i class="fa-solid fa-code"></i>
+                </button>
+
+                <div class="btn-group" role="group">
+                  <button id="btnGroupVerticalDrop3" type="button" class="btn btn-primary dropdown-toggle"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-solid fa-face-grin-stars" data-toggle="tooltip" data-bs-placement="right"
+                      title="VKBeuitify"></i>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop3">
+                    <li>
+                      <a class="dropdown-item" onclick="beautify('xml')" aria-label="XML Pretty">xml</a>
                     </li>
                     <li>
-                      <a
-                        class="dropdown-item"
-                        aria-label="save css"
-                        onclick="downloadFile('css'); return false;"
-                        >css</a
-                      >
+                      <a class="dropdown-item" onclick="beautify('json')" aria-label="JSON Pretty">json</a>
                     </li>
                     <li>
-                      <a
-                        class="dropdown-item"
-                        aria-label="save sql"
-                        onclick="downloadFile('sql'); return false;"
-                        >sql</a
-                      >
+                      <a class="dropdown-item" onclick="beautify('sql')" aria-label="SQL Pretty">Sql</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" onclick="beautify('css')" aria-label="CSS Pretty">css</a>
                     </li>
                   </ul>
                 </div>
 
-                <div class="btn-group" role="group">
-                  <button
-                    id="btnGroupVerticalDropBar3"
-                    type="button"
-                    class="btn btn-success dropdown-toggle"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    <i
-                      class="fa-regular fa-window-maximize"
-                      data-bs-placement="top"
-                      title="SAVE TO BROWSER"
-                    ></i>
-                    <i
-                      class="far fa-save"
-                      data-toggle="tooltip"
-                      data-bs-placement="top"
-                      title="SAVE TO BROWSER"
-                    ></i>
-                  </button>
-                  <ul
-                    class="dropdown-menu"
-                    aria-labelledby="btnGroupVerticalDropBar3"
-                  >
-                    <li>
-                      <a
-                        class="dropdown-item"
-                        aria-label="save to local cache"
-                        onclick="SaveToCache()"
-                        >Save To Cache</a
-                      >
-                    </li>
-                    <li>
-                      <a
-                        class="dropdown-item"
-                        aria-label="clear items from cache"
-                        onclick="ClearCache()"
-                        >clear Cache</a
-                      >
-                    </li>
-                    <li><div class="dropdown-divider"></div></li>
-                    <li><div id="CacheList"></div></li>
-                    <template>
-                      <li><a class="dropdown-item" onclick="">item1</a></li>
-                    </template>
-                  </ul>
-                </div>
-                
+                <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right"
+                  title="Get Distnct items from 2 lists" onclick="getDistintItemsFromLists()">
+                  <i class="fa-solid fa-arrows-turn-to-dots"></i>
+                </button>
+                <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right"
+                  title="Get matching items from 2 or more lists (blank line as seperator)" onclick="getMatchingItemsFromLists()">
+                  <i class="fa-solid fa-code-merge"></i>
+                </button>
+                <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right" title="Speak"
+                  onclick="speak()">
+                  <i class="fa-solid fa-volume-high"></i>
+                </button>
+              </div>
+
+              <br />
+            </div>
+            <div class="col-md-11">
+              <div class="form-group shadow-textarea">
+                <textarea class="form-control z-depth-1 shadow-lg p-3 mb-5 bg-body-tertiary rounded"
+                  aria-label="Main Form" id="TextBox1" rows="20" onkeyup="keyUp(this)"></textarea>
               </div>
             </div>
           </div>
         </div>
+        <div class="row"></div>
       </div>
+      <div class="panel-footer">
+        <div class="row">
+          <div class="col-md-2"></div>
 
-      <footer class="text-muted">
-        <div class="container">
-          <p class="float-right">&copy; Luke Liukonen 2020</p>
-          <p></p>
-          <p></p>
-        </div>
-      </footer>
-
-      <div
-        class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="aboutModal" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">About</h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
+          <div class="btn-toolbar mb-2" role="toolbar" aria-label="Toolbar with button groups">
+            <div class="btn-group me-3" role="group" aria-label="First group">
+              <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Rows">
+                <button type="button" class="btn btn-outline-secondary" id="RowsCount" disabled>0</button>
+              </span>
+              <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Characters">
+                <button type="button" class="btn btn-outline-secondary" id="CharCount" disabled>0</button></span>
             </div>
-            <div class="modal-body">
-              App created by Luke Liukonen. <br />
-              copyright 2020. MIT License<br />
-              Developed as a quick string editor that has different bells and
-              whistles then say, notepad++. Implements some common one off items
-              that a developer might need for string editing<br />
-
-              Info about FavIcon: Icon made by
-              <a href="https://icon54.com/" title="Pixel perfect"
-                >Pixel perfect</a
-              >
-              from
-              <a href="https://www.flaticon.com/" title="Flaticon"
-                >www.flaticon.com</a
-              ><br />
-              More information can be found at my homepage
-              <a href="https://liukonen.dev" target="_blank"
-                >https://liukonen.dev</a
-              >
+            <div class="input-group  me-3">
+              <input type="text" id="TextBox2" aria-label="field 1" name="TextBox2"
+                class="form-control border-primary shadow-lg" />
+              <div class="btn-group" role="group">
+                <button id="btnGroupVerticalDropBar1" type="button" class="btn btn-primary dropdown-toggle"
+                  data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fa-solid fa-ellipsis" data-toggle="tooltip" data-bs-placement="top" title="edit"></i>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="btnGroupVerticalDropBar1">
+                  <li>
+                    <a class="dropdown-item" aria-label="Parse text" href="#" onclick="txtParse(); return false;"><i
+                        class="fas fa-cut"></i> Parse Text</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" aria-label="Insert on Start" href="#" onclick="insertStart();"><i
+                        class="fas fa-chevron-right"></i>insert Start</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" aria-label="insert on end" href="#" onclick="insertEnd();"><i
+                        class="fas fa-chevron-left"></i>insert End</a>
+                  </li>
+                </ul>
+              </div>
             </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Close
+
+            <div class="input-group  me-3">
+              <input type="text" id="TextBox3" aria-label="field 2" name="TextBox3"
+                class="form-control border-primary shadow" />
+              <button onclick="txtReplace();" aria-label="replace text" class="btn btn-primary" data-toggle="tooltip"
+                title="Replace">
+                <i class="fa-solid fa-arrow-right-arrow-left"></i>
               </button>
             </div>
+
+            <button class="btn btn-warning me-2" data-toggle="tooltip" title="Clear text"
+              onclick="clearScreen(); return false;">
+              <i class="fas fa-eraser"></i>
+            </button>
+            <button class="btn btn-secondary  me-2" data-toggle="tooltip" title="copy to clipboard"
+              onclick="copyToClipboard(); return false;">
+              <i class="far fa-copy"></i>
+            </button>
+
+            <div class="btn-group" role="group">
+              <button id="btnGroupVerticalDropBar2" type="button" class="btn btn-success dropdown-toggle me-2"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="far fa-save" data-toggle="tooltip" data-bs-placement="top" title="SAVE AS"></i>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="btnGroupVerticalDropBar2">
+                <li>
+                  <a class="dropdown-item" aria-label="save text" onclick="downloadFile('txt'); return false;">TXT</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" aria-label="save xml" onclick="downloadFile('xml'); return false;">XML</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" aria-label="save csv" onclick="downloadFile('csv'); return false;">CSV</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" aria-label="save json" onclick="downloadFile('json'); return false;">json</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" aria-label="save css" onclick="downloadFile('css'); return false;">css</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" aria-label="save sql" onclick="downloadFile('sql'); return false;">sql</a>
+                </li>
+              </ul>
+            </div>
+
+            <div class="btn-group" role="group">
+              <button id="btnGroupVerticalDropBar3" type="button" class="btn btn-success dropdown-toggle"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa-regular fa-window-maximize" data-bs-placement="top" title="SAVE TO BROWSER"></i>
+                <i class="far fa-save" data-toggle="tooltip" data-bs-placement="top" title="SAVE TO BROWSER"></i>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="btnGroupVerticalDropBar3">
+                <li>
+                  <a class="dropdown-item" aria-label="save to local cache" onclick="saveToCache()">Save To Cache</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" aria-label="clear items from cache" onclick="clearCache()">clear Cache</a>
+                </li>
+                <li>
+                  <div class="dropdown-divider"></div>
+                </li>
+                <li>
+                  <div id="CacheList"></div>
+                </li>
+                <template>
+                  <li><a class="dropdown-item" onclick="">item1</a></li>
+                </template>
+              </ul>
+            </div>
+
           </div>
         </div>
       </div>
+    </div>
+  </div>
 
-      <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
-        integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
-        crossorigin="anonymous"
-        referrerpolicy="no-referrer"
-      ></script>
-      <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"
-        integrity="sha512-VK2zcvntEufaimc+efOYi622VN5ZacdnufnmX7zIhCPmjhKnOi9ZDMtg1/ug5l183f19gG1/cBstPO4D8N/Img=="
-        crossorigin="anonymous"
-        referrerpolicy="no-referrer"
-      ></script>
-      <script src="./js/TextApp.js"></script>
-      <script src="./js/vkBeautify/vkbeautify.js"></script>
-    </body>
-  </head>
+  <footer class="text-muted">
+    <div class="container">
+      <p>&copy; Luke Liukonen 2020-2023</p>
+    </div>
+  </footer>
+
+  <div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="aboutModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">About</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          App created by Luke Liukonen. <br />
+          copyright 2020. MIT License<br />
+          Developed as a quick string editor that has different bells and
+          whistles then say, notepad++. Implements some common one off items
+          that a developer might need for string editing<br />
+
+          Info about FavIcon: Icon made by
+          <a href="https://icon54.com/" title="Pixel perfect">Pixel perfect</a>
+          from
+          <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a><br />
+          More information can be found at my homepage
+          <a href="https://liukonen.dev" target="_blank">https://liukonen.dev</a>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+    integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"
+    integrity="sha512-VK2zcvntEufaimc+efOYi622VN5ZacdnufnmX7zIhCPmjhKnOi9ZDMtg1/ug5l183f19gG1/cBstPO4D8N/Img=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="./js/TextApp.js"></script>
+  <script src="./js/vkBeautify/vkbeautify.js"></script>
+</body>
+</head>
+
 </html>
