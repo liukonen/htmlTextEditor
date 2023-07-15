@@ -1,0 +1,18 @@
+{
+  "name": "htmlTextEditor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "uglifyjs ./docs/js/src/TextApp.js --compress -o ./docs/js/app.min.js ",
+    "build-vk": "uglifyjs ./docs/js/src/vkbeautify.js --compress -o ./docs/js/vkbeautify.min.js",
+    "build-worker": "uglifyjs ./docs/js/src/serviceWorker.js --compress -o ./docs/serviceWorker.min.js "
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "uglify-js": "3"
+  }
+}

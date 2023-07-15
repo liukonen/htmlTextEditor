@@ -17,12 +17,11 @@ self.addEventListener('install', function(event) {
             'img/text512.png',
             'img/text72.png', 
             'img/text96.png',
-            'js/vkBeautify/vkbeautify.js',
+            'js/vkbeautify.min.js',
             'manifest.json',
-            'js/TextApp.js',
+            'js/app.min.js',
             'https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css',
             'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
-            'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js',
             'https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js'
           // Add more files to cache as needed
         ])

@@ -335,10 +335,11 @@ window.onload = (event) => {
 }
 
 
-//UI a
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip()
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+  return new bootstrap.Tooltip(tooltipTriggerEl)
 })
+
 
 document.getElementById("btnSwitch").addEventListener("click", () => {
   let invertedTheme = (document.documentElement.getAttribute("data-bs-theme") == "dark") ? "light" : "dark"
@@ -358,29 +359,31 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 })
 
-$(document).ready(function () {
+document.addEventListener('DOMContentLoaded', function() {
   function adjustLayout() {
-    var windowWidth = $(window).width()
+    var windowWidth = window.innerWidth;
+    var buttonGroup = document.getElementById('button-group');
+
     if (windowWidth >= 770) {
       // Move the button group above the textbox
-      $('#button-group').addClass('btn-group-vertical')
+      buttonGroup.classList.add('btn-group-vertical');
     } else {
       // Move the button group back to its original position
-      $('#button-group').removeClass('btn-group-vertical')
+      buttonGroup.classList.remove('btn-group-vertical');
     }
   }
 
   // Initial adjustment on page load
-  adjustLayout()
+  adjustLayout();
 
   // Adjust layout on window resize
-  $(window).resize(function () {
-    adjustLayout()
-  })
-})
+  window.addEventListener('resize', function() {
+    adjustLayout();
+  });
+});
 
 //Service Worker for PWA
 if ("serviceWorker" in navigator) {
   // register service worker
-  navigator.serviceWorker.register("./serviceWorker.js")
+  navigator.serviceWorker.register("./serviceWorker.min.js")
 }
