@@ -8,9 +8,7 @@ App can be found at [https://liukonen.github.io/htmlTextEditor/](https://liukone
 
 Thanks to the following:
 
-- FENIX 2.0 for building an awesome small basic html web server
-- The folks with Bootstrap and Bootswatch for CSS and reactive design
-- The developers of jQuery
+- The folks with Bootstrap for CSS and reactive design
 - Vadim Kiryukhin for building VKBeautify
 
 ## Design patterns or technologies explored
