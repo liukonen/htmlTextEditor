@@ -22,7 +22,10 @@ self.addEventListener('install', function(event) {
             'js/app.min.js',
             'https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css',
             'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
-            'https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js'
+            'https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js',
+            'https://fonts.cdnfonts.com/s/29131/Cascadia.woff',
+            'https://fonts.cdnfonts.com/css/cascadia-code'
+
           // Add more files to cache as needed
         ])
       })

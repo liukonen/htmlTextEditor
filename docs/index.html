@@ -17,11 +17,15 @@
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#000" />
   <link rel="apple-touch-icon" href="./img/apple-touch-icon.png" />
+  <link href="https://fonts.cdnfonts.com/css/cascadia-code" rel="stylesheet">
   <link rel="icon" href="./favicon.ico" />
   <style>
     #TextBox1 {
-      height: 70vh;/* Set initial height to 80% of viewport height */
+      height: 70vh;
+      /* Set initial height to 80% of viewport height */
+      font-family: 'Cascadia Mono', 'Courier New', monospace;
     }
+
     #OpenFile {
       display: none;
     }
@@ -52,147 +56,145 @@
   <div class="album py-3 body-bg">
     <div class="container-fluid">
       <div class="panel panel-default">
-        <div class="panel-body">
-          <div class="row">
-            <div class="col-md-1">
-              <div id="button-group" class="btn-group-vertical shadow-lg">
-                <button class="btn btn-secondary" data-toggle="tooltip" data-bs-placement="right" title="Open File"
-                  id="upload_link" onclick="openDialog()">
-                  <i class="fas fa-folder-open"></i>
-                </button>
-                <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right" title="Single Line"
-                  onclick="singleLine()">
-                  <i class="fas fa-compress"></i>
-                </button>
-                <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right" title="Distinct List"
-                  onclick="distinctList()" aria-label="Distinct List">
-                  <i class="fas fa-list-ul"></i>
-                </button>
-                <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right" title="Sort List"
-                  onclick="sortList()" aria-label="single line">
-                  <i class="fa-solid fa-list-ol"></i>
-                </button>
-                <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right" title="ToUpper"
-                  onclick="toUpper()" aria-label="single line">
-                  A
-                </button>
-                <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right" title="Lower Case"
-                  onclick="toLower()" aria-label="single line">
-                  a
-                </button>
-                <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right" title="Duplicate lines"
-                  onclick="dupicateLines()" aria-label="single line">
-                  <i class="fa-solid fa-copy"></i>
-                </button>
+        <div class="panel-body row">
+          <div class="col-md-1">
+            <div id="button-group" class="btn-group-vertical shadow-lg">
+              <button class="btn btn-secondary" data-toggle="tooltip" data-bs-placement="right" title="Open File"
+                id="upload_link" onclick="openDialog()">
+                <i class="fas fa-folder-open"></i>
+              </button>
+              <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right" title="Single Line"
+                onclick="singleLine()">
+                <i class="fas fa-compress"></i>
+              </button>
+              <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right" title="Distinct List"
+                onclick="distinctList()" aria-label="Distinct List">
+                <i class="fas fa-list-ul"></i>
+              </button>
+              <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right" title="Sort List"
+                onclick="sortList()" aria-label="single line">
+                <i class="fa-solid fa-list-ol"></i>
+              </button>
+              <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right" title="ToUpper"
+                onclick="toUpper()" aria-label="single line">
+                A
+              </button>
+              <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right" title="Lower Case"
+                onclick="toLower()" aria-label="single line">
+                a
+              </button>
+              <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right" title="Duplicate lines"
+                onclick="dupicateLines()" aria-label="single line">
+                <i class="fa-solid fa-copy"></i>
+              </button>
 
-                <div class="btn-group" role="group">
-                  <button id="btnGroupVerticalDrop1" type="button" class="btn btn-primary dropdown-toggle"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fa-solid fa-scissors" data-toggle="tooltip" data-bs-placement="right" title="trim"></i>
-                  </button>
-                  <ul class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1">
-                    <li>
-                      <a class="dropdown-item" onclick="trimText('trimStart')" aria-label="Trim Start">Start</a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" onclick="trimText('trimEnd')" aria-label="Trim End">End</a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" onclick="trimText('trim')" aria-label="Trim All">All</a>
-                    </li>
-                  </ul>
-                </div>
-                <div class="btn-group" role="group">
-                  <button id="btngroupurl" type="button" class="btn btn-primary dropdown-toggle" 
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fa-solid fa-globe" data-toggle="tooltip" data-bs-placement="right" title="url"></i>
-                  </button>
-                  <ul class="dropdown-menu" aria-labelledby="btngroupurl">
-                    <li>
-                      <a class="dropdown-item" onclick="urlEncode()" aria-label="url encode">Url Encode</a>
-                      <a class="dropdown-item" onclick="urlDecode()" aria-label="url decode">Url decode</a>
-                    </li>
-                  </ul>
-                </div>
-                <div class="btn-group" role="group">
-                  <button id="btnGroupVerticalDrop2" type="button" class="btn btn-primary dropdown-toggle"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fas fa-keyboard" data-toggle="tooltip" data-bs-placement="right" title="Base 64"></i>
-                  </button>
-                  <ul class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
-                    <li>
-                      <a class="dropdown-item" onclick="base64Encode();" aria-label="Base 64 encode">Encode</a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" onclick="base64Decode();" aria-label="Base 64 decode">Decode</a>
-                    </li>
-                  </ul>
-                </div>
-                <button class="btn btn-primary" onclick="removeXMLNamespace()" data-toggle="tooltip"
-                  data-bs-placement="right" title="Remove XML Namespaces">
-                  <i class="fa-solid fa-code"></i>
+              <div class="btn-group" role="group">
+                <button id="btnGroupVerticalDrop1" type="button" class="btn btn-primary dropdown-toggle"
+                  data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fa-solid fa-scissors" data-toggle="tooltip" data-bs-placement="right" title="trim"></i>
                 </button>
+                <ul class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1">
+                  <li>
+                    <a class="dropdown-item" onclick="trimText('trimStart')" aria-label="Trim Start">Start</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" onclick="trimText('trimEnd')" aria-label="Trim End">End</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" onclick="trimText('trim')" aria-label="Trim All">All</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="btn-group" role="group">
+                <button id="btngroupurl" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                  <i class="fa-solid fa-globe" data-toggle="tooltip" data-bs-placement="right" title="url"></i>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="btngroupurl">
+                  <li>
+                    <a class="dropdown-item" onclick="urlEncode()" aria-label="url encode">Url Encode</a>
+                    <a class="dropdown-item" onclick="urlDecode()" aria-label="url decode">Url decode</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="btn-group" role="group">
+                <button id="btnGroupVerticalDrop2" type="button" class="btn btn-primary dropdown-toggle"
+                  data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-keyboard" data-toggle="tooltip" data-bs-placement="right" title="Base 64"></i>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop2">
+                  <li>
+                    <a class="dropdown-item" onclick="base64Encode();" aria-label="Base 64 encode">Encode</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" onclick="base64Decode();" aria-label="Base 64 decode">Decode</a>
+                  </li>
+                </ul>
+              </div>
+              <button class="btn btn-primary" onclick="removeXMLNamespace()" data-toggle="tooltip"
+                data-bs-placement="right" title="Remove XML Namespaces">
+                <i class="fa-solid fa-code"></i>
+              </button>
 
-                <div class="btn-group" role="group">
-                  <button id="btnGroupVerticalDrop3" type="button" class="btn btn-primary dropdown-toggle"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fa-solid fa-face-grin-stars" data-toggle="tooltip" data-bs-placement="right"
-                      title="VKBeuitify"></i>
-                  </button>
-                  <ul class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop3">
-                    <li>
-                      <a class="dropdown-item" onclick="beautify('xml')" aria-label="XML Pretty">xml</a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" onclick="beautify('json')" aria-label="JSON Pretty">json</a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" onclick="beautify('sql')" aria-label="SQL Pretty">Sql</a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" onclick="beautify('css')" aria-label="CSS Pretty">css</a>
-                    </li>
-                  </ul>
-                </div>
-
-                <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right"
-                  title="Get Distnct items from 2 lists" onclick="getDistintItemsFromLists()">
-                  <i class="fa-solid fa-arrows-turn-to-dots"></i>
+              <div class="btn-group" role="group">
+                <button id="btnGroupVerticalDrop3" type="button" class="btn btn-primary dropdown-toggle"
+                  data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fa-solid fa-face-grin-stars" data-toggle="tooltip" data-bs-placement="right"
+                    title="VKBeuitify"></i>
                 </button>
-                <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right"
-                  title="Get matching items from 2 or more lists (blank line as seperator)" onclick="getMatchingItemsFromLists()">
-                  <i class="fa-solid fa-code-merge"></i>
-                </button>
-                <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right" title="Speak"
-                  onclick="speak()">
-                  <i class="fa-solid fa-volume-high"></i>
-                </button>
+                <ul class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop3">
+                  <li>
+                    <a class="dropdown-item" onclick="beautify('xml')" aria-label="XML Pretty">xml</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" onclick="beautify('json')" aria-label="JSON Pretty">json</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" onclick="beautify('sql')" aria-label="SQL Pretty">Sql</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" onclick="beautify('css')" aria-label="CSS Pretty">css</a>
+                  </li>
+                </ul>
               </div>
 
-              <br />
+              <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right"
+                title="Get Distnct items from 2 lists" onclick="getDistintItemsFromLists()">
+                <i class="fa-solid fa-arrows-turn-to-dots"></i>
+              </button>
+              <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right"
+                title="Get matching items from 2 or more lists (blank line as seperator)"
+                onclick="getMatchingItemsFromLists()">
+                <i class="fa-solid fa-code-merge"></i>
+              </button>
+              <button class="btn btn-primary" data-toggle="tooltip" data-bs-placement="right" title="Speak"
+                onclick="speak()">
+                <i class="fa-solid fa-volume-high"></i>
+              </button>
             </div>
-            <div class="col-md-11">
-              <div class="form-group shadow-textarea">
-                <textarea class="form-control z-depth-1 shadow-lg p-3 mb-5 bg-body-tertiary rounded"
-                  aria-label="Main Form" id="TextBox1" rows="20" onkeyup="keyUp(this)"></textarea>
-              </div>
+            <br />
+          </div>
+          <div class="col-md-11">
+            <div class="form-group shadow-textarea">
+              <textarea class="form-control z-depth-1 shadow-lg p-3 mb-5 bg-body-tertiary rounded"
+                aria-label="Main Form" id="TextBox1" rows="20" onkeyup="keyUp(this)"></textarea>
             </div>
           </div>
         </div>
-        <div class="row"></div>
       </div>
-      <div class="panel-footer">
+      <div class="panel-footer container-fluid">
         <div class="row">
-          <div class="col-md-2"></div>
-
-          <div class="btn-toolbar mb-2" role="toolbar" aria-label="Toolbar with button groups">
-            <div class="btn-group me-3" role="group" aria-label="First group">
+          <div class="col-md-1">
+            <div class="col-md-1 btn-group me-3" role="group" aria-label="First group">
               <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Rows">
                 <button type="button" class="btn btn-outline-secondary" id="RowsCount" disabled>0</button>
               </span>
               <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Characters">
-                <button type="button" class="btn btn-outline-secondary" id="CharCount" disabled>0</button></span>
+                <button type="button" class="btn btn-outline-secondary" id="CharCount" disabled>0</button>
+              </span>
             </div>
+          </div>
+          <div class="col-md-11 btn-toolbar mb-2" role="toolbar" aria-label="Toolbar with button groups">
             <div class="input-group  me-3">
               <input type="text" id="TextBox2" aria-label="field 1" name="TextBox2"
                 class="form-control border-primary shadow-lg" />
@@ -203,7 +205,7 @@
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="btnGroupVerticalDropBar1">
                   <li>
-                    <a class="dropdown-item" aria-label="Parse text" href="#" onclick="txtParse(); return false;"><i
+                    <a class="dropdown-item" aria-label="Parse text" href="#" onclick="txtParse()"><i
                         class="fas fa-cut"></i> Parse Text</a>
                   </li>
                   <li>
@@ -227,12 +229,11 @@
               </button>
             </div>
 
-            <button class="btn btn-warning me-2" data-toggle="tooltip" title="Clear text"
-              onclick="clearScreen(); return false;">
+            <button class="btn btn-warning me-2" data-toggle="tooltip" title="Clear text" onclick="clearScreen()">
               <i class="fas fa-eraser"></i>
             </button>
             <button class="btn btn-secondary  me-2" data-toggle="tooltip" title="copy to clipboard"
-              onclick="copyToClipboard(); return false;">
+              onclick="copyToClipboard()">
               <i class="far fa-copy"></i>
             </button>
 
@@ -243,22 +244,22 @@
               </button>
               <ul class="dropdown-menu" aria-labelledby="btnGroupVerticalDropBar2">
                 <li>
-                  <a class="dropdown-item" aria-label="save text" onclick="downloadFile('txt'); return false;">TXT</a>
+                  <a class="dropdown-item" aria-label="save text" onclick="downloadFile('txt')">TXT</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" aria-label="save xml" onclick="downloadFile('xml'); return false;">XML</a>
+                  <a class="dropdown-item" aria-label="save xml" onclick="downloadFile('xml')">XML</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" aria-label="save csv" onclick="downloadFile('csv'); return false;">CSV</a>
+                  <a class="dropdown-item" aria-label="save csv" onclick="downloadFile('csv')">CSV</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" aria-label="save json" onclick="downloadFile('json'); return false;">json</a>
+                  <a class="dropdown-item" aria-label="save json" onclick="downloadFile('json')">json</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" aria-label="save css" onclick="downloadFile('css'); return false;">css</a>
+                  <a class="dropdown-item" aria-label="save css" onclick="downloadFile('css')">css</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" aria-label="save sql" onclick="downloadFile('sql'); return false;">sql</a>
+                  <a class="dropdown-item" aria-label="save sql" onclick="downloadFile('sql')">sql</a>
                 </li>
               </ul>
             </div>
@@ -271,15 +272,18 @@
               </button>
               <ul class="dropdown-menu" aria-labelledby="btnGroupVerticalDropBar3">
                 <li>
-                  <a class="dropdown-item" aria-label="save to local cache" onclick="saveToCache()">Save To Cache</a>
+                  <a class="dropdown-item" aria-label="save to local cache" onclick="saveToCache()">Save To
+                    Cache</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" aria-label="clear items from cache" onclick="clearCache()">clear Cache</a>
+                  <a class="dropdown-item" aria-label="clear items from cache" onclick="clearCache()">clear
+                    Cache</a>
                 </li>
                 <li>
                   <div class="dropdown-divider"></div>
                 </li>
                 <li>
+
                   <div id="CacheList"></div>
                 </li>
                 <template>
@@ -290,17 +294,12 @@
 
           </div>
         </div>
+        <div class="row mt-4 px-4">
+          &copy; Luke Liukonen 2020-2023
+        </div>
       </div>
     </div>
   </div>
-
-  <footer class="text-muted">
-
-    <div class="container">
-      <p>&copy; Luke Liukonen 2020-2023</p>
-    </div>
-  </footer>
-
   <div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="aboutModal" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -330,13 +329,11 @@
       </div>
     </div>
   </div>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"
     integrity="sha512-X/YkDZyjTf4wyc2Vy16YGCPHwAY8rZJY+POgokZjQB2mhIRFJCckEGc6YyX9eNsPfn0PzThEuNs+uaomE5CO6A=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="./js/vkbeautify.min.js"></script> 
-    <script src="./js/app.min.js"></script>
+  <script src="./js/vkbeautify.min.js"></script>
+  <script src="./js/app.min.js"></script>
 </body>
 </head>
-
 </html>
