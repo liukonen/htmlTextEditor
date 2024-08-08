@@ -34,15 +34,21 @@ self.addEventListener('install', function(event) {
   
   // Intercept fetch requests
   self.addEventListener('fetch', function(event) {
+    if (event.request.url.startsWith('chrome-extension://')) {
+      return;
+    }
     event.respondWith(
       fetch(event.request)
         .then(function(response) {
+          if(!response || response.status !== 200 || response.type !== 'basic') {
+            return response;
+          }
+
           var responseClone = response.clone()
   
           caches.open('my-cache').then(function(cache) {
             cache.put(event.request, responseClone)
           })
-  
           return response
         })
         .catch(function() {

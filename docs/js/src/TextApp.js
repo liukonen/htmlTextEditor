@@ -3,30 +3,38 @@ const toolbar1 = document.getElementById('TextBox2')
 const toolbar2 = document.getElementById('TextBox3')
 
 
-//EVENT HANDLES
-function openDialog() {
-  document.getElementById("OpenFile").click()
+const debounce = (func, delay) => {
+  let timeoutId
+  return () => {
+    clearTimeout(timeoutId)
+    timeoutId = setTimeout(() => func(textbox), delay)
+  }
 }
+
+const debouncedKeyUp = debounce(keyUp, 300)
+textbox.addEventListener('input', debouncedKeyUp)
+
+//EVENT HANDLES
+const  openDialog = () => document.getElementById("OpenFile").click()
 
 function singleLine() {
   textbox.value = textbox.value.replace(/\n/g, '')
   keyUp(textbox)
 }
 
-function distinctList() {
+const distinctList = () => {
   try {
     const lines = textbox.value.split(/\n/)
-    const distinctLines = Array.from(new Set(lines))
-    textbox.value = distinctLines.join('\n')
+    textbox.value = Array.from(new Set(lines)).join('\n')
     keyUp(textbox)
   } catch (err) {
     alert(err.message)
   }
 }
 
-function sortList() {
+const sortList = () => {
   try {
-    var items = toList(textbox.value)
+    let items = toList(textbox.value)
     items.sort()
     textbox.value = fromList(items)
     keyUp(textbox)
@@ -35,12 +43,11 @@ function sortList() {
   }
 }
 
-function toUpper() { textbox.value = textbox.value.toUpperCase() }
-
-function toLower() { textbox.value = textbox.value.toLowerCase() }
+const toUpper = () => textbox.value = textbox.value.toUpperCase() 
+const toLower = () => textbox.value = textbox.value.toLowerCase() 
 
 function dupicateLines() {
-  var Items = toList(textbox.value)
+  let Items = toList(textbox.value)
   console.log(Items)
   let X = Items.map(line => line.toString() + line.toString())
   textbox.value = fromList(X)
@@ -51,12 +58,11 @@ function trimText(method) {
   textbox.value = fromList(trimmedItems)
 }
 
-function urlEncode(){textbox.value = encodeURI(textbox.value)}
-function urlDecode(){textbox.value = decodeURI(textbox.value)}
+const urlEncode = () => textbox.value = encodeURI(textbox.value)
+const urlDecode = () => textbox.value = decodeURI(textbox.value)
 
-function base64Decode() { textbox.value = atob(textbox.value) }
-
-function base64Encode() { textbox.value = btoa(textbox.value) }
+const base64Decode = () => textbox.value = atob(textbox.value)
+const base64Encode = () => textbox.value = btoa(textbox.value)
 
 function removeXMLNamespace() {
   try {
@@ -76,16 +82,16 @@ function beautify(type) {
 }
 
 function getDistintItemsFromLists() {
-  let lists = extractLists();
+  let lists = extractLists()
   let distinct = getUniqueItemsFromArrays(lists)
-  let outputValue = ""; 
+  let outputValue = "" 
   
   for (const list of lists) {
     outputValue += fromList(list.filter(obj => { return distinct.indexOf(obj) != -1 })) + "\n\n"
   } 
   
-  textbox.value = outputValue;
-  outputValue = "";
+  textbox.value = outputValue
+  outputValue = ""
 }
 
 function getMatchingItemsFromLists() {
@@ -99,7 +105,7 @@ function getMatchingItemsFromLists() {
 }
 
 function speak() {
-  var msg = new SpeechSynthesisUtterance()
+  const msg = new SpeechSynthesisUtterance()
   msg.text = textbox.value
   window.speechSynthesis.speak(msg)
 }
@@ -109,7 +115,7 @@ function speak() {
 //SINGLE LINE ITEMS
 function txtParse() {
   try {
-    var tb2 = toolbar1.value
+    let tb2 = toolbar1.value
     if (tb2 != '') { textbox.value = parseText(textbox.value, tb2) }
     keyUp(textbox)
   } catch (err) {
@@ -146,13 +152,7 @@ function clearScreen() {
 }
 
 function copyToClipboard() {
-  const el = document.createElement('textarea')
-  el.value = textbox.value
-  document.body.appendChild(el)
-  el.select()
-  document.execCommand('copy')
-  document.body.removeChild(el)
-  alert("text copied to clipboard.")
+  navigator.clipboard.writeText(textbox.value).then(() => {alert("text copied to clipboard.")}).catch(err => {alert(err.message)})
 }
 
 function downloadFile(extension) {
@@ -202,36 +202,18 @@ function dateString() {
 }
 
 function extractLists() {
-  // Split the text into lines
-  const lines = toList(textbox.value)
-  // Parse the lines into lists
-  const lists = []
-  let currentList = []
-  lines.forEach(line => {
-    if (line.trim() === '') {
-      if (currentList.length > 0) {
-        lists.push(currentList)
-        currentList = []
-      }
-    } else {
-      currentList.push(line.trim())
-    }
-  })
-  console.log(lists)
-  // Exclude empty lists
-  return lists.filter(list => list.length > 0)
+  const text = textbox.value;
+  const lists3 = text.split(/\n{2,}/);
+  return lists3.map(list => list.split('\n').filter(item => item.trim() !== '')).filter(list => list.length > 0)
 }
 
-function fromList(listToJoin) {
-  if (listToJoin.length == 0 && listToJoin[0] == '') { return '' }
-  return listToJoin.join('\n')
-}
+const fromList = (listToJoin) => (listToJoin.length == 0 && listToJoin[0] == '') ? '' : listToJoin.join('\n') 
 
 function getLists() {
   const Lines = toList(textbox.value)
   const list1 = []
   const list2 = []
-  var HasHit = false
+  let HasHit = false
   for (const line of Lines) {
     if (line == '') { HasHit = true } //skip over all empty lines
     else { if (HasHit) { list1.push(line) } else { list2.push(line) } }
@@ -240,13 +222,13 @@ function getLists() {
 }
 
 function getUniqueItemsFromArrays(arrays) {
-  const flattenedArray = arrays.flat();
-  const itemCounts = {};
-  for (const item of flattenedArray) {
-    itemCounts[item] = (itemCounts[item] || 0) + 1;
-  }
-  const uniqueItems = Object.keys(itemCounts).filter(item => itemCounts[item] === 1);
-  return uniqueItems;
+   const flattenedArray = arrays.flat()
+   const itemCounts = {}
+   for (const item of flattenedArray) {
+     itemCounts[item] = (itemCounts[item] || 0) + 1
+   }
+   const uniqueItems = Object.keys(itemCounts).filter(item => itemCounts[item] === 1)
+   return uniqueItems
 }
 
 function handleDragOver(eventItem) {
@@ -257,9 +239,9 @@ function handleDragOver(eventItem) {
 
 function handleFileOpen(eventItem) {
   console.log(eventItem)
-  var file = eventItem.target.files[0]
+  let file = eventItem.target.files[0]
   if (!file) { return }
-  var reader = new FileReader()
+  let reader = new FileReader()
   reader.onload = function (event) { textbox.value = event.target.result }
   reader.readAsText(file)
 }
@@ -267,7 +249,7 @@ function handleFileOpen(eventItem) {
 function handleFileSelect(eventItem) {
   eventItem.stopPropagation()
   eventItem.preventDefault()
-  var reader = new FileReader()
+  let reader = new FileReader()
   reader.onload = function (event) { textbox.value = event.target.result }
   reader.readAsText(eventItem.dataTransfer.files[0])
 }
@@ -275,23 +257,24 @@ function handleFileSelect(eventItem) {
 function keyUp(txt) {
   const value = txt.value
   const charCount = value.replace(/ /g, '').length
-  const rowsCount = value.split('\n').length
+  const rowsCount = (value.match(/\n/g) || []).length + 1
   document.getElementById('CharCount').textContent = charCount
   document.getElementById('RowsCount').textContent = rowsCount
+
 }
 
 function parseText(text, parseItem) {
   return fromList(text.split(new RegExp(`(?=${parseItem})`, 'g')))
 }
 
-function readCache() { return JSON.parse(localStorage.getItem('CachedItems')) || [] }
+const readCache = () => JSON.parse(localStorage.getItem('CachedItems')) || [] 
 
 function refreshCacheDropdown() {
   const Doc = document.getElementById("CacheList")
   const ExistingStorage = readCache()
   const temp = document.getElementsByTagName("template")[0]
 
-  Doc.innerHTML = ""
+  Doc.textContent = ""
   item = temp.content.querySelector("a")
   for (i = 0; i < ExistingStorage.length; i++) {
     a = document.importNode(item, true)
@@ -311,7 +294,7 @@ function removeXmlns(xml) {
 
 function setCache(s) { localStorage.setItem('CachedItems', JSON.stringify(s)) }
 
-function toList(text) { return text.split(/\n/) }
+const toList = (text) => text.split(/\n/) 
 
 //document event handles
 document.getElementById('OpenFile').addEventListener('change', handleFileOpen)
@@ -323,7 +306,6 @@ window.onbeforeunload = function () {
   sessionStorage.setItem('textapp.textarea', textbox.value)
   sessionStorage.setItem('textapp.toolbar1', toolbar1.value)
   sessionStorage.setItem('textapp.toolbar2', toolbar2.value)
-
 }
 
 //OnLoad pulls any values from season storage
@@ -335,8 +317,8 @@ window.onload = (event) => {
 }
 
 
-var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
-var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
+let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
   return new bootstrap.Tooltip(tooltipTriggerEl)
 })
 
@@ -349,7 +331,7 @@ document.getElementById("btnSwitch").addEventListener("click", () => {
 
 document.addEventListener("DOMContentLoaded", function () {
   const darkThemeMq = window.matchMedia("(prefers-color-scheme: dark)")
-  var currentTheme = localStorage.getItem("theme")
+  let currentTheme = localStorage.getItem("theme")
   if (!currentTheme && darkThemeMq.matches) { currentTheme = "dark" }
   if (currentTheme) {
     document.documentElement.setAttribute(
@@ -361,29 +343,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
 document.addEventListener('DOMContentLoaded', function() {
   function adjustLayout() {
-    var windowWidth = window.innerWidth;
-    var buttonGroup = document.getElementById('button-group');
+    let windowWidth = window.innerWidth
+    let buttonGroup = document.getElementById('button-group')
 
     if (windowWidth >= 770) {
-      // Move the button group above the textbox
-      buttonGroup.classList.add('btn-group-vertical');
+      buttonGroup.classList.add('btn-group-vertical')
     } else {
-      // Move the button group back to its original position
-      buttonGroup.classList.remove('btn-group-vertical');
+      buttonGroup.classList.remove('btn-group-vertical')
     }
   }
 
-  // Initial adjustment on page load
-  adjustLayout();
+  adjustLayout()
 
-  // Adjust layout on window resize
-  window.addEventListener('resize', function() {
-    adjustLayout();
-  });
-});
+  window.addEventListener('resize', ()  => { adjustLayout() })
+})
 
-//Service Worker for PWA
 if ("serviceWorker" in navigator) {
-  // register service worker
   navigator.serviceWorker.register("./serviceWorker.min.js")
 }
