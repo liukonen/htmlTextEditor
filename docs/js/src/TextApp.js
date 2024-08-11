@@ -2,15 +2,25 @@ const textbox = document.getElementById('TextBox1')
 const toolbar1 = document.getElementById('TextBox2')
 const toolbar2 = document.getElementById('TextBox3')
 
-
-const toList = (text) => text.split(/\n/)
-const replaceText = (requestTextbox, value, replacementValue) => requestTextbox.value.replace(value, replacementValue) 
+const cachedItems  = "items"
+const toList = (text) => text.split(/\r?\n/)
+const replaceText = (requestTextbox, value, replacementValue) => requestTextbox.value.replace(value, replacementValue)
 const distinct = (list) => Array.from(new Set(list))
 const fromList = (listToJoin) => (listToJoin.length == 0 && listToJoin[0] == '') ? '' : listToJoin.join('\n')
 const sort = (arrayItems) => arrayItems.sort()
 const ListDisect = (transformFunction) => fromList(toList(textbox.value).map(item => transformFunction(item)))
-const removePrefixXml =(xml) =>xml.replace(/<[A-Z]+:/g, "<").replace(/<\/[A-Z]+:/g, "</").replace(/[A-Z]+:nil/g, "nil").replace(/[A-Z]+:type/g, "type")
+const removePrefixXml = (xml) => xml.replace(/<[A-Z]+:/g, "<").replace(/<\/[A-Z]+:/g, "</").replace(/[A-Z]+:nil/g, "nil").replace(/[A-Z]+:type/g, "type")
 const removeXmlns = (xml) => xml.replace(/xmlns[^"]*"[^"]*"/g, "").replace(/\s+>/g, ">")
+const parseText = (text, parseItem) => fromList(text.split(new RegExp(`(?=${parseItem})`, 'g')))
+
+const keyUp = (txt) => {
+  const value = txt.value
+  const charCount = value.replace(/ /g, '').length
+  const rowsCount = (value.match(/\n/g) || []).length + 1
+  document.getElementById('CharCount').textContent = charCount
+  document.getElementById('RowsCount').textContent = rowsCount
+
+}
 
 const debounce = (func, delay) => {
   let timeoutId
@@ -52,7 +62,7 @@ const sortList = () => {
 const toUpper = () => textbox.value = textbox.value.toUpperCase()
 const toLower = () => textbox.value = textbox.value.toLowerCase()
 
-const dupicateLines = () => { 
+const dupicateLines = () => {
   textbox.value = ListDisect(item => item.toString() + item.toString())
   keyUp(textbox)
 }
@@ -124,7 +134,7 @@ const insertStart = () => {
   keyUp(textbox)
 }
 
-const insertEnd =() => {
+const insertEnd = () => {
   const toolbarText = toolbar1.value
   textbox.value = textbox.value.replace(/\n/g, toolbarText + '\n') + toolbarText
   keyUp(textbox)
@@ -141,7 +151,7 @@ const txtReplace = () => {
 }
 
 //INDIVIUAL ITEMS
-const clearScreen =() => {
+const clearScreen = () => {
   [textbox.value, toolbar1.value, toolbar2.value] = ['', '', '']
   keyUp(textbox)
   sessionStorage.clear()
@@ -153,34 +163,43 @@ const copyToClipboard = () => {
 
 const downloadFile = (extension) => {
   try {
-    const content = textbox.value
-    const downloadLink = document.createElement("a")
-    const filename = "output_" + dateString() + "." + extension
-    downloadLink.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(content))
-    downloadLink.setAttribute("download", filename)
-    downloadLink.style.display = "none"
-    document.body.appendChild(downloadLink)
-    downloadLink.click()
-    document.body.removeChild(downloadLink)
+    downloadContent(textbox.value, extension)
   } catch (err) {
     alert(err.message)
   }
 }
+const generateFilename = (extension) => `output_${dateString()}.${extension}`
 
-const saveToCache = () => {
-  const ExistingStorage = readCache()
+const downloadContent = (content, extension) => {
+  const blob = new Blob([textbox.value], { type: 'text/plain' })
+  const url = URL.createObjectURL(blob)
+  const downloadLink = document.createElement('a')
+  const filename = generateFilename(extension)
+  downloadLink.href = url
+  downloadLink.download = filename
+  document.body.appendChild(downloadLink)
+  downloadLink.click()
+  document.body.removeChild(downloadLink)
+  URL.revokeObjectURL(url)
+}
+
+const saveToCache = async () => {
+  const ExistingStorage = await readCache()
   ExistingStorage.push({ key: dateString(), value: textbox.value })
-  localStorage.setItem('CachedItems', JSON.stringify(ExistingStorage))
-  refreshCacheDropdown()
+
+  const compressed = await compressData(JSON.stringify(ExistingStorage));
+  localStorage.setItem(cachedItems, btoa(String.fromCharCode.apply(null, new Uint8Array(compressed))));
+  //localStorage.setItem('CachedItems', JSON.stringify(ExistingStorage))
+  await refreshCacheDropdown()
 }
 
-const clearCache = () => {
-  localStorage.removeItem('CachedItems')
-  refreshCacheDropdown()
+const clearCache = async () => {
+  localStorage.removeItem(cachedItems)
+  await refreshCacheDropdown()
 }
 
-const readItem = (s) => {
-  const ExistingStorage = readCache()
+const readItem = async (s) => {
+  const ExistingStorage = await readCache()
   const X = ExistingStorage.filter(item => item.key == s)[0]
   textbox.value = X.value
 }
@@ -199,9 +218,7 @@ const extractLists = () => {
   return lists3.map(list => list.split('\n').filter(item => item.trim() !== '')).filter(list => list.length > 0)
 }
 
-
-
-function getLists() {
+ const getLists = () => {
   const Lines = toList(textbox.value)
   const list1 = []
   const list2 = []
@@ -213,7 +230,7 @@ function getLists() {
   return { L1: list1, L2: list2 }
 }
 
-function getUniqueItemsFromArrays(arrays) {
+const getUniqueItemsFromArrays = (arrays) => {
   const flattenedArray = arrays.flat()
   const itemCounts = {}
   for (const item of flattenedArray) {
@@ -223,24 +240,26 @@ function getUniqueItemsFromArrays(arrays) {
   return uniqueItems
 }
 
-function keyUp(txt) {
-  const value = txt.value
-  const charCount = value.replace(/ /g, '').length
-  const rowsCount = (value.match(/\n/g) || []).length + 1
-  document.getElementById('CharCount').textContent = charCount
-  document.getElementById('RowsCount').textContent = rowsCount
+const readCache = async() => {
+  let compressed = localStorage.getItem(cachedItems);
+  if (compressed) {
+    const decompressed = await decompressData(Uint8Array.from(atob(compressed), c => c.charCodeAt(0)));
+    return JSON.parse(decompressed);
+  }
 
+  const original = localStorage.getItem('CachedItems')
+  if (original) {
+    const compressed = await compressData(original);
+    localStorage.setItem(cachedItems, btoa(String.fromCharCode.apply(null, new Uint8Array(compressed))));
+    localStorage.removeItem('CachedItems')
+    return JSON.parse(original)
+  }
+  return [];
 }
 
-function parseText(text, parseItem) {
-  return fromList(text.split(new RegExp(`(?=${parseItem})`, 'g')))
-}
-
-const readCache = () => JSON.parse(localStorage.getItem('CachedItems')) || []
-
-function refreshCacheDropdown() {
+  const refreshCacheDropdown = async () => {
   const Doc = document.getElementById("CacheList")
-  const ExistingStorage = readCache()
+  const ExistingStorage = await readCache()
   const temp = document.getElementsByTagName("template")[0]
 
   Doc.textContent = ""
@@ -258,22 +277,21 @@ document.getElementById('OpenFile').addEventListener('change', (eventItem) => {
   let file = eventItem.target.files[0]
   if (!file) { return }
   let reader = new FileReader()
-  reader.onload = function (event) { textbox.value = event.target.result }
+  reader.onload =  (event) => { textbox.value = event.target.result }
   reader.readAsText(file)
 })
 
-textbox.addEventListener('dragover', (eventItem) => 
-  {
+textbox.addEventListener('dragover', (eventItem) => {
   eventItem.stopPropagation()
   eventItem.preventDefault()
   eventItem.dataTransfer.dropEffect = 'copy'
-} , false)
+}, false)
 
 textbox.addEventListener('drop', (eventItem) => {
   eventItem.stopPropagation()
   eventItem.preventDefault()
   let reader = new FileReader()
-  reader.onload = function (event) { textbox.value = event.target.result }
+  reader.onload =  (event) => { textbox.value = event.target.result }
   reader.readAsText(eventItem.dataTransfer.files[0])
 }, false)
 
@@ -285,17 +303,15 @@ window.onbeforeunload = () => {
 }
 
 //OnLoad pulls any values from season storage
-window.onload = (event) => {
+window.onload = async (event) => {
   textbox.value = sessionStorage.getItem('textapp.textarea')
   toolbar1.value = sessionStorage.getItem('textapp.toolbar1')
   toolbar2.value = sessionStorage.getItem('textapp.toolbar2')
-  refreshCacheDropdown()
+  await refreshCacheDropdown()
 }
 
 let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
-let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-  return new bootstrap.Tooltip(tooltipTriggerEl)
-})
+let tooltipList = tooltipTriggerList.map((tooltipTriggerEl)  => new bootstrap.Tooltip(tooltipTriggerEl))
 
 
 document.getElementById("btnSwitch").addEventListener("click", () => {
@@ -304,7 +320,17 @@ document.getElementById("btnSwitch").addEventListener("click", () => {
   localStorage.setItem("theme", invertedTheme)
 })
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
+  const adjustLayout = () => {
+    let windowWidth = window.innerWidth
+    let buttonGroup = document.getElementById('button-group')
+    if (windowWidth >= 770) {
+      buttonGroup.classList.add('btn-group-vertical')
+    } else {
+      buttonGroup.classList.remove('btn-group-vertical')
+    }
+  }
+  
   const darkThemeMq = window.matchMedia("(prefers-color-scheme: dark)")
   let currentTheme = localStorage.getItem("theme")
   if (!currentTheme && darkThemeMq.matches) { currentTheme = "dark" }
@@ -314,25 +340,28 @@ document.addEventListener("DOMContentLoaded", function () {
       currentTheme
     )
   }
-})
-
-document.addEventListener('DOMContentLoaded', function () {
-  function adjustLayout() {
-    let windowWidth = window.innerWidth
-    let buttonGroup = document.getElementById('button-group')
-
-    if (windowWidth >= 770) {
-      buttonGroup.classList.add('btn-group-vertical')
-    } else {
-      buttonGroup.classList.remove('btn-group-vertical')
-    }
-  }
-
   adjustLayout()
-
   window.addEventListener('resize', () => { adjustLayout() })
 })
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./serviceWorker.min.js")
+}
+
+const asynccompressData = async (data) => {
+  const stream = new CompressionStream('gzip')
+  const writer = stream.writable.getWriter()
+  writer.write(new TextEncoder().encode(data))
+  writer.close()
+  return new Response(stream.readable).arrayBuffer()
+}
+
+const decompressData = async (compressedData) => {
+  const stream = new DecompressionStream('gzip')
+  const writer = stream.writable.getWriter()
+  writer.write(compressedData)
+  writer.close()
+  return new Response(stream.readable).arrayBuffer().then(buffer => 
+      new TextDecoder().decode(buffer)
+  )
 }
