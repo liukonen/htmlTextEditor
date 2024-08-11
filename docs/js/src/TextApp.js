@@ -3,6 +3,15 @@ const toolbar1 = document.getElementById('TextBox2')
 const toolbar2 = document.getElementById('TextBox3')
 
 
+const toList = (text) => text.split(/\n/)
+const replaceText = (requestTextbox, value, replacementValue) => requestTextbox.value.replace(value, replacementValue) 
+const distinct = (list) => Array.from(new Set(list))
+const fromList = (listToJoin) => (listToJoin.length == 0 && listToJoin[0] == '') ? '' : listToJoin.join('\n')
+const sort = (arrayItems) => arrayItems.sort()
+const ListDisect = (transformFunction) => fromList(toList(textbox.value).map(item => transformFunction(item)))
+const removePrefixXml =(xml) =>xml.replace(/<[A-Z]+:/g, "<").replace(/<\/[A-Z]+:/g, "</").replace(/[A-Z]+:nil/g, "nil").replace(/[A-Z]+:type/g, "type")
+const removeXmlns = (xml) => xml.replace(/xmlns[^"]*"[^"]*"/g, "").replace(/\s+>/g, ">")
+
 const debounce = (func, delay) => {
   let timeoutId
   return () => {
@@ -15,17 +24,16 @@ const debouncedKeyUp = debounce(keyUp, 300)
 textbox.addEventListener('input', debouncedKeyUp)
 
 //EVENT HANDLES
-const  openDialog = () => document.getElementById("OpenFile").click()
+const openDialog = () => document.getElementById("OpenFile").click()
 
-function singleLine() {
-  textbox.value = textbox.value.replace(/\n/g, '')
+const singleLine = () => {
+  textbox.value = replaceText(textbox, /\n/g, '')
   keyUp(textbox)
 }
 
 const distinctList = () => {
   try {
-    const lines = textbox.value.split(/\n/)
-    textbox.value = Array.from(new Set(lines)).join('\n')
+    textbox.value = distinct(toList(textbox.value)).join('\n')
     keyUp(textbox)
   } catch (err) {
     alert(err.message)
@@ -34,28 +42,24 @@ const distinctList = () => {
 
 const sortList = () => {
   try {
-    let items = toList(textbox.value)
-    items.sort()
-    textbox.value = fromList(items)
+    textbox.value = fromList(sort(toList(textbox.value)))
     keyUp(textbox)
   } catch (err) {
     alert(err.message)
   }
 }
 
-const toUpper = () => textbox.value = textbox.value.toUpperCase() 
-const toLower = () => textbox.value = textbox.value.toLowerCase() 
+const toUpper = () => textbox.value = textbox.value.toUpperCase()
+const toLower = () => textbox.value = textbox.value.toLowerCase()
 
-function dupicateLines() {
-  let Items = toList(textbox.value)
-  console.log(Items)
-  let X = Items.map(line => line.toString() + line.toString())
-  textbox.value = fromList(X)
+const dupicateLines = () => { 
+  textbox.value = ListDisect(item => item.toString() + item.toString())
+  keyUp(textbox)
 }
 
-function trimText(method) {
-  const trimmedItems = toList(textbox.value).map(item => item[method]())
-  textbox.value = fromList(trimmedItems)
+const trimText = (method) => {
+  textbox.value = ListDisect(item => item[method]())
+  keyUp(textbox)
 }
 
 const urlEncode = () => textbox.value = encodeURI(textbox.value)
@@ -64,7 +68,7 @@ const urlDecode = () => textbox.value = decodeURI(textbox.value)
 const base64Decode = () => textbox.value = atob(textbox.value)
 const base64Encode = () => textbox.value = btoa(textbox.value)
 
-function removeXMLNamespace() {
+const removeXMLNamespace = () => {
   try {
     textbox.value = removeXmlns(removePrefixXml(textbox.value))
   } catch (err) {
@@ -72,7 +76,7 @@ function removeXMLNamespace() {
   }
 }
 
-function beautify(type) {
+const beautify = (type) => {
   try {
     textbox.value = vkbeautify[type](textbox.value)
     keyUp(textbox)
@@ -81,30 +85,21 @@ function beautify(type) {
   }
 }
 
-function getDistintItemsFromLists() {
-  let lists = extractLists()
-  let distinct = getUniqueItemsFromArrays(lists)
-  let outputValue = "" 
-  
-  for (const list of lists) {
-    outputValue += fromList(list.filter(obj => { return distinct.indexOf(obj) != -1 })) + "\n\n"
-  } 
-  
-  textbox.value = outputValue
-  outputValue = ""
+const getDistintItemsFromLists = () => {
+  const lists = extractLists();
+  const distinct = getUniqueItemsFromArrays(lists);
+  textbox.value = lists.map(list => fromList(list.filter(obj => distinct.includes(obj)))).join("\n\n");
+  keyUp(textbox)
 }
 
-function getMatchingItemsFromLists() {
-  let nonEmptyLists = extractLists()
-  let commonStrings = nonEmptyLists[0] || []
-  nonEmptyLists.slice(1).forEach(list => {
-    commonStrings = commonStrings.filter(str => list.includes(str))
-  })
+const getMatchingItemsFromLists = () => {
+  const nonEmptyLists = extractLists();
+  const commonStrings = nonEmptyLists.reduce((common, list) => list.filter(str => common.includes(str)), nonEmptyLists[0] || []);
   textbox.value = fromList(commonStrings)
-  keyUp
+  keyUp(textbox)
 }
 
-function speak() {
+const speak = () => {
   const msg = new SpeechSynthesisUtterance()
   msg.text = textbox.value
   window.speechSynthesis.speak(msg)
@@ -113,7 +108,7 @@ function speak() {
 //BOTTOM ROW
 
 //SINGLE LINE ITEMS
-function txtParse() {
+const txtParse = () => {
   try {
     let tb2 = toolbar1.value
     if (tb2 != '') { textbox.value = parseText(textbox.value, tb2) }
@@ -123,39 +118,40 @@ function txtParse() {
   }
 }
 
-function insertStart() {
+const insertStart = () => {
   const toolbarText = toolbar1.value
   textbox.value = toolbarText + textbox.value.replace(/\n/g, '\n' + toolbarText)
   keyUp(textbox)
 }
-function insertEnd() {
+
+const insertEnd =() => {
   const toolbarText = toolbar1.value
   textbox.value = textbox.value.replace(/\n/g, toolbarText + '\n') + toolbarText
   keyUp(textbox)
 }
 
 //DOUBLE LINE ITEMS
-function txtReplace() {
+const txtReplace = () => {
   try {
     textbox.value = textbox.value.replaceAll(toolbar1.value, toolbar2.value)
-    keyUp(document.getElementById('TextBox1'))
+    keyUp(textbox)
   } catch (err) {
     alert(err.message)
   }
 }
 
 //INDIVIUAL ITEMS
-function clearScreen() {
+const clearScreen =() => {
   [textbox.value, toolbar1.value, toolbar2.value] = ['', '', '']
   keyUp(textbox)
   sessionStorage.clear()
 }
 
-function copyToClipboard() {
-  navigator.clipboard.writeText(textbox.value).then(() => {alert("text copied to clipboard.")}).catch(err => {alert(err.message)})
+const copyToClipboard = () => {
+  navigator.clipboard.writeText(textbox.value).then(() => { alert("text copied to clipboard.") }).catch(err => { alert(err.message) })
 }
 
-function downloadFile(extension) {
+const downloadFile = (extension) => {
   try {
     const content = textbox.value
     const downloadLink = document.createElement("a")
@@ -171,43 +167,39 @@ function downloadFile(extension) {
   }
 }
 
-function saveToCache() {
+const saveToCache = () => {
   const ExistingStorage = readCache()
   ExistingStorage.push({ key: dateString(), value: textbox.value })
-  setCache(ExistingStorage)
+  localStorage.setItem('CachedItems', JSON.stringify(ExistingStorage))
   refreshCacheDropdown()
 }
 
-function clearCache() {
+const clearCache = () => {
   localStorage.removeItem('CachedItems')
   refreshCacheDropdown()
 }
 
-function readItem(s) {
+const readItem = (s) => {
   const ExistingStorage = readCache()
   const X = ExistingStorage.filter(item => item.key == s)[0]
   textbox.value = X.value
 }
 
 //HELPERS
-function dateString() {
+const dateString = () => {
   const xNow = new Date()
-  const year = xNow.getFullYear().toString()
-  const month = (xNow.getMonth() + 1).toString().padStart(2, '0')
-  const day = xNow.getDate().toString().padStart(2, '0')
-  const hours = xNow.getHours().toString().padStart(2, '0')
-  const minutes = xNow.getMinutes().toString().padStart(2, '0')
-  const seconds = xNow.getSeconds().toString().padStart(2, '0')
-  return `${year}-${month}-${day}-${hours}-${minutes}-${seconds}`
+  return `${xNow.getFullYear().toString()}-${pd(xNow.getMonth() + 1)}-${pd(xNow.getDate())}-${pd(xNow.getHours())}-${pd(xNow.getMinutes())}-${pd(xNow.getSeconds())}`
 }
 
-function extractLists() {
+const pd = (num) => num.toString().padStart(2, '0')
+
+const extractLists = () => {
   const text = textbox.value;
   const lists3 = text.split(/\n{2,}/);
   return lists3.map(list => list.split('\n').filter(item => item.trim() !== '')).filter(list => list.length > 0)
 }
 
-const fromList = (listToJoin) => (listToJoin.length == 0 && listToJoin[0] == '') ? '' : listToJoin.join('\n') 
+
 
 function getLists() {
   const Lines = toList(textbox.value)
@@ -222,36 +214,13 @@ function getLists() {
 }
 
 function getUniqueItemsFromArrays(arrays) {
-   const flattenedArray = arrays.flat()
-   const itemCounts = {}
-   for (const item of flattenedArray) {
-     itemCounts[item] = (itemCounts[item] || 0) + 1
-   }
-   const uniqueItems = Object.keys(itemCounts).filter(item => itemCounts[item] === 1)
-   return uniqueItems
-}
-
-function handleDragOver(eventItem) {
-  eventItem.stopPropagation()
-  eventItem.preventDefault()
-  eventItem.dataTransfer.dropEffect = 'copy'
-}
-
-function handleFileOpen(eventItem) {
-  console.log(eventItem)
-  let file = eventItem.target.files[0]
-  if (!file) { return }
-  let reader = new FileReader()
-  reader.onload = function (event) { textbox.value = event.target.result }
-  reader.readAsText(file)
-}
-
-function handleFileSelect(eventItem) {
-  eventItem.stopPropagation()
-  eventItem.preventDefault()
-  let reader = new FileReader()
-  reader.onload = function (event) { textbox.value = event.target.result }
-  reader.readAsText(eventItem.dataTransfer.files[0])
+  const flattenedArray = arrays.flat()
+  const itemCounts = {}
+  for (const item of flattenedArray) {
+    itemCounts[item] = (itemCounts[item] || 0) + 1
+  }
+  const uniqueItems = Object.keys(itemCounts).filter(item => itemCounts[item] === 1)
+  return uniqueItems
 }
 
 function keyUp(txt) {
@@ -267,7 +236,7 @@ function parseText(text, parseItem) {
   return fromList(text.split(new RegExp(`(?=${parseItem})`, 'g')))
 }
 
-const readCache = () => JSON.parse(localStorage.getItem('CachedItems')) || [] 
+const readCache = () => JSON.parse(localStorage.getItem('CachedItems')) || []
 
 function refreshCacheDropdown() {
   const Doc = document.getElementById("CacheList")
@@ -284,25 +253,32 @@ function refreshCacheDropdown() {
   }
 }
 
-function removePrefixXml(xml) {
-  return xml.replace(/<[A-Z]+:/g, "<").replace(/<\/[A-Z]+:/g, "</").replace(/[A-Z]+:nil/g, "nil").replace(/[A-Z]+:type/g, "type")
-}
-
-function removeXmlns(xml) {
-  return xml.replace(/xmlns[^"]*"[^"]*"/g, "").replace(/\s+>/g, ">")
-}
-
-function setCache(s) { localStorage.setItem('CachedItems', JSON.stringify(s)) }
-
-const toList = (text) => text.split(/\n/) 
-
 //document event handles
-document.getElementById('OpenFile').addEventListener('change', handleFileOpen)
-textbox.addEventListener('dragover', handleDragOver, false)
-textbox.addEventListener('drop', handleFileSelect, false)
+document.getElementById('OpenFile').addEventListener('change', (eventItem) => {
+  let file = eventItem.target.files[0]
+  if (!file) { return }
+  let reader = new FileReader()
+  reader.onload = function (event) { textbox.value = event.target.result }
+  reader.readAsText(file)
+})
+
+textbox.addEventListener('dragover', (eventItem) => 
+  {
+  eventItem.stopPropagation()
+  eventItem.preventDefault()
+  eventItem.dataTransfer.dropEffect = 'copy'
+} , false)
+
+textbox.addEventListener('drop', (eventItem) => {
+  eventItem.stopPropagation()
+  eventItem.preventDefault()
+  let reader = new FileReader()
+  reader.onload = function (event) { textbox.value = event.target.result }
+  reader.readAsText(eventItem.dataTransfer.files[0])
+}, false)
 
 //Saves the data to local seasion storage before the refresh button is history
-window.onbeforeunload = function () {
+window.onbeforeunload = () => {
   sessionStorage.setItem('textapp.textarea', textbox.value)
   sessionStorage.setItem('textapp.toolbar1', toolbar1.value)
   sessionStorage.setItem('textapp.toolbar2', toolbar2.value)
@@ -315,7 +291,6 @@ window.onload = (event) => {
   toolbar2.value = sessionStorage.getItem('textapp.toolbar2')
   refreshCacheDropdown()
 }
-
 
 let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
 let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -341,7 +316,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 })
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   function adjustLayout() {
     let windowWidth = window.innerWidth
     let buttonGroup = document.getElementById('button-group')
@@ -355,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   adjustLayout()
 
-  window.addEventListener('resize', ()  => { adjustLayout() })
+  window.addEventListener('resize', () => { adjustLayout() })
 })
 
 if ("serviceWorker" in navigator) {
