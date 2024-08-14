@@ -348,7 +348,7 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./serviceWorker.min.js")
 }
 
-const asynccompressData = async (data) => {
+const compressData = async (data) => {
   const stream = new CompressionStream('gzip')
   const writer = stream.writable.getWriter()
   writer.write(new TextEncoder().encode(data))
