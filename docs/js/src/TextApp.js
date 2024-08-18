@@ -189,7 +189,6 @@ const saveToCache = async () => {
 
   const compressed = await compressData(JSON.stringify(ExistingStorage));
   localStorage.setItem(cachedItems, btoa(String.fromCharCode.apply(null, new Uint8Array(compressed))));
-  //localStorage.setItem('CachedItems', JSON.stringify(ExistingStorage))
   await refreshCacheDropdown()
 }
 

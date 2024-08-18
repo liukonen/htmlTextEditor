@@ -5,14 +5,15 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "uglifyjs ./docs/js/src/TextApp.js --compress -o ./docs/js/app.min.js ",
-    "build-vk": "uglifyjs ./docs/js/src/vkbeautify.js --compress -o ./docs/js/vkbeautify.min.js",
-    "build-worker": "uglifyjs ./docs/js/src/serviceWorker.js --compress -o ./docs/serviceWorker.min.js "
+    "build-app": "terser ./docs/js/src/TextApp.js -c -m -o ./docs/js/app.min.js --config-file terser.config.json",
+    "build-vk": "terser ./docs/js/src/vkbeautify.js -c -m -o ./docs/js/vkbeautify.min.js --config-file terser.config.json",
+    "build-worker": "terser ./docs/js/src/serviceWorker.js -c -m -o ./docs/serviceWorker.min.js --config-file terser.config.json",
+    "build": "npm run build-app && npm run build-vk && npm run build-worker"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "uglify-js": "3"
+    "terser": "^5.31.6"
   }
 }

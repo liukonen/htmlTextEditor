@@ -1,0 +1,14 @@
+{
+    "compress": {
+      "drop_console": true,
+      "passes": 2,
+      "unsafe": true
+    },
+    "mangle": {
+      "toplevel": true,
+      "keep_fnames": true
+    },
+    "output": {
+      "comments": false
+    }
+  }
