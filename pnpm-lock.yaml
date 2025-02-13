@@ -7,7 +7,7 @@ settings:
 devDependencies:
   terser:
     specifier: ^5.31.6
-    version: 5.38.2
+    version: 5.39.0
 
 packages:
 
@@ -74,8 +74,8 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /terser@5.38.2:
-    resolution: {integrity: sha512-w8CXxxbFA5zfNsR/i8HZq5bvn18AK0O9jj7hyo1YqkovLxEFa0uP0LCVGZRqiRaKRFxXhELBp8SteeAjEnfeJg==}
+  /terser@5.39.0:
+    resolution: {integrity: sha512-LBAhFyLho16harJoWMg/nZsQYgTrg5jXOn2nCYjRUcZZEdE3qa2zb8QEDRUGVZBW4rlazf2fxkg8tztybTaqWw==}
     engines: {node: '>=10'}
     hasBin: true
     dependencies:
