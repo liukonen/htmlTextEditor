@@ -7,10 +7,10 @@
   <meta name="description" content="Basic Developer Text Editor in a browser" />
   <meta name="author" content="Functionality - Luke Liukonen, Other components to there respected autors" />
   <title>Html Text Editor</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.8/css/bootstrap.min.css"
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.8/css/bootstrap.min.css"
     integrity="sha512-2bBQCjcnw658Lho4nlXJcc6WkV/UxpE/sAokbXPxQNGqmNdQrWqtw26Ns9kFF/yG792pKR1Sx8/Y1Lf1XN4GKA=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <!-- <link rel="stylesheet" href="css/bootstrap.min.css"> -->
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
     integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -19,6 +19,7 @@
   <link rel="apple-touch-icon" href="./img/apple-touch-icon.png" />
   <link href="https://fonts.cdnfonts.com/css/cascadia-code" rel="stylesheet">
   <link rel="icon" href="./favicon.ico" />
+
   <style>
     #TextBox1 {
       height: 70vh;
@@ -57,6 +58,7 @@
     <div class="container-fluid">
       <div class="panel panel-default">
         <div class="panel-body row">
+          <!-- SIDE PANEL -->
           <div class="col-md-1">
             <div id="button-group" class="btn-group-vertical shadow-lg">
               <button class="btn btn-secondary" data-toggle="tooltip" data-bs-placement="right" title="Open File"
@@ -174,6 +176,7 @@
             </div>
             <br />
           </div>
+          <!-- MAIN PANEL -->
           <div class="col-md-11">
             <div class="form-group shadow-textarea">
               <textarea class="form-control z-depth-1 shadow-lg p-3 mb-5 bg-body-tertiary rounded"
@@ -181,8 +184,10 @@
             </div>
           </div>
         </div>
+        <!-- END MAIN PANEL -->
       </div>
       <div class="panel-footer container-fluid">
+        <!-- BOTTOM ROW-->
         <div class="row">
           <div class="col-md-1">
             <div class="col-md-1 btn-group me-3" role="group" aria-label="First group">
@@ -294,12 +299,15 @@
 
           </div>
         </div>
+        <!-- FOOTER -->
         <div class="row mt-4 px-4">
-          &copy; Luke Liukonen 2020-2026. All rights reserved. | MIT License | <a href="https://liukonen.dev" target="_blank">Homepage</a>
+          &copy; Luke Liukonen 2020-2026. All rights reserved. | MIT License | <a href="https://liukonen.dev"
+            target="_blank">Homepage</a><a href="beta.htm" >New Beta version! </a>
         </div>
       </div>
     </div>
   </div>
+  <!-- HIDDEN MODAL -->
   <div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="aboutModal" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -336,4 +344,5 @@
   <script src="./js/app.min.js"></script>
 </body>
 </head>
+
 </html>

@@ -1,0 +1,246 @@
+:root {
+  --bg: #ffffff;
+  --panel: #f4f4f4;
+  --text: #1a1a1a;
+  --border: #ddd;
+  --accent: #0078d4;
+}
+
+[data-theme=dark] {
+  --bg: #121212;
+  --panel: #1e1e1e;
+  --text: #eaeaea;
+  --border: #333;
+}
+
+/* GLOBAL */
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* TOP BAR */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  font-weight: 600;
+}
+
+.menu {
+  display: flex;
+  gap: 6px;
+}
+
+/* DROPDOWN */
+.dropdown {
+  position: relative;
+}
+
+.dropbtn {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  min-width: 140px;
+  z-index: 1000;
+}
+
+.dropdown-content button, .dropdown-content .button {
+  width: 100%;
+  padding: 6px 10px;
+  border: none;
+  background: none;
+  text-align: left;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* THEME */
+.theme-btn {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  border-radius: 6px;
+}
+
+/* LAYOUT */
+.layout {
+  display: flex;
+  height: calc(100vh - 92px);
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 140px;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sidebar button, .sidebar .button {
+  padding: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  border-radius: 6px;
+}
+
+/* EDITOR */
+.editor {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+}
+
+textarea {
+  flex: 1;
+  resize: none;
+  padding: 10px;
+  border: 1px solid var(--border);
+  font-family: monospace;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* TOOL BLOCKS */
+.tool-block {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.tool-block input {
+  flex: 1;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+/* BOTTOM BAR */
+.bottombar {
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+  background: var(--panel);
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+}
+
+.bottom-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.stats {
+  display: flex;
+  gap: 10px;
+}
+
+/* MODAL */
+.modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.modal.open {
+  display: flex;
+}
+
+.modal-box {
+  background: var(--panel);
+  padding: 20px;
+  border-radius: 8px;
+}
+
+/* FORCE CONSISTENT BUTTON TEXT */
+button, .button {
+  color: var(--text);
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  background: none;
+  text-align: left;
+  color: var(--text);
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.button {
+  -webkit-appearance: button;
+     -moz-appearance: button;
+          appearance: button;
+}
+
+/* TOPBAR BUTTONS (including theme button) */
+.topbar button, .topbar .button {
+  color: var(--text);
+}
+
+/* DROPDOWN BUTTONS */
+.dropbtn {
+  color: var(--text);
+}
+
+/* DROPDOWN ITEMS */
+.dropdown-content button, .dropdown-content .button {
+  color: var(--text);
+}
+
+/* HOVER STATE FIX (prevents invisible text) */
+.dropdown-content button:hover, .dropdown-content .button:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* THEME BUTTON EXPLICIT FIX */
+.theme-btn {
+  color: var(--text);
+}
+
+input,
+textarea {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+/* Placeholder also needs fixing */
+input::-moz-placeholder, textarea::-moz-placeholder {
+  color: color-mix(in srgb, var(--text), transparent 40%);
+}
+input::placeholder,
+textarea::placeholder {
+  color: color-mix(in srgb, var(--text), transparent 40%);
+}/*# sourceMappingURL=editor.css.map */

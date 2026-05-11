@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-bs-theme="light">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HTML Text Editor</title>
+  <link rel="stylesheet" href="./css/editor.css" />
+
+</head>
+
+<body>
+
+  <!-- TOP MENU -->
+  <header class="topbar">
+
+    <div class="brand">HTML Text Editor</div>
+
+    <nav class="menu">
+
+      <div class="dropdown">
+        <button class="dropbtn">File ▾</button>
+        <div class="dropdown-content">
+          <button onclick="openDialog()">Open</button>
+          <button onclick="downloadFile('txt')">Save</button>
+          <button onclick="clearScreen()">Clear</button>
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <button class="dropbtn">Edit ▾</button>
+        <div class="dropdown-content">
+          <button onclick="singleLine()">Single Line</button>
+          <button onclick="trimText('trim')">Trim All</button>
+          <button onclick="trimText('trimStart')">Trim Start</button>
+          <button onclick="trimText('trimEnd')">Trim End</button>
+
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <button class="dropbtn">Tools ▾</button>
+        <div class="dropdown-content">
+          <button onclick="toUpper()">UPPER</button>
+          <button onclick="toLower()">lower</button>
+          <button onclick="distinctList()">Distinct</button>
+          <button onclick="sortList()">Sort</button>
+          <button onclick="dupicateLines()">Duplicate</button>
+          <button onclick="removeXMLNamespace()">Remove XML NS</button>
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <button class="dropbtn">Encode ▾</button>
+        <div class="dropdown-content">
+          <button onclick="base64Encode()">Base64 Encode</button>
+          <button onclick="base64Decode()">Base64 Decode</button>
+          <button onclick="urlEncode()">URL Encode</button>
+          <button onclick="urlDecode()">URL Decode</button>
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <button class="dropbtn">Format ▾</button>
+        <div class="dropdown-content">
+          <button onclick="beautify('json')">Format JSON</button>
+          <button onclick="beautify('xml')">Format XML</button>
+          <button onclick="beautify('sql')">Format SQL</button>
+
+          <button onclick="minify('json')">Min JSON</button>
+          <button onclick="minify('xml')">Min XML</button>
+          <button onclick="minify('sql')">Min SQL</button>
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <button class="dropbtn">Lists ▾</button>
+        <div class="dropdown-content">
+          <button onclick="getDistintItemsFromLists()">Distinct Items</button>
+          <button onclick="getMatchingItemsFromLists()">Matching Items</button>
+          <button onclick="txtParse()">Parse List</button>
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <button class="dropbtn">Help ▾</button>
+        <div class="dropdown-content">
+          <button onclick="speak()">Speak</button>
+          <button onclick="alert('HTML Text Editor by Luke Liukonen. MIT License.')">About</button>
+        </div>
+      </div>
+
+    </nav>
+
+    <button class="theme-btn" id="btnSwitch">🌙</button>
+
+  </header>
+
+  <!-- FILE INPUT -->
+  <input type="file" id="OpenFile" hidden />
+
+  <!-- MAIN LAYOUT -->
+  <main class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="button-group">
+      <button  onclick="saveToCache()">Save To Cache</button>
+      <button  onclick="clearCache()">clear
+        Cache</button>
+
+
+      <div id="CacheList"></div>
+
+      <template>
+        <a class="button" onclick="">item1</a>
+      </template>
+
+
+    </aside>
+
+    <!-- CENTER -->
+    <section class="editor">
+
+      <textarea id="TextBox1"></textarea>
+
+      <!-- TOOL INPUT 1 -->
+      <div class="tool-block">
+        <input id="TextBox2" placeholder="Insert text (before / after)" />
+        <button onclick="insertStart()">Insert Start</button>
+        <button onclick="insertEnd()">Insert End</button>
+      </div>
+
+      <!-- TOOL INPUT 2 -->
+      <div class="tool-block">
+        <input id="TextBox3" placeholder="find|replace" />
+        <button onclick="txtReplace()">Replace</button>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- BOTTOM BAR -->
+  <footer class="bottombar">
+
+    <div class="stats">
+      Rows: <span id="RowsCount">0</span>
+      Chars: <span id="CharCount">0</span>
+    </div>
+
+    <div class="bottom-actions">
+
+      <button onclick="copyToClipboard()">Copy</button>
+      <button onclick="downloadFile('txt')">TXT</button>
+      <button onclick="downloadFile('json')">JSON</button>
+      <button onclick="downloadFile('xml')">XML</button>
+
+    </div>
+
+  </footer>
+
+  <!-- MODAL -->
+  <div class="modal" id="aboutModal">
+    <div class="modal-box">
+      <h3>About</h3>
+      <p>HTML Text Editor Tool</p>
+      <p>Created by Luke Liukonen. MIT License</p>
+      <button onclick="closeAbout()">Close</button>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="./js/vkbeautify.min.js"></script>
+  <script src="./js/app.min.js"></script>
+
+  <!-- Helper for theme compatibility -->
+  <script src="./js/beta.min.js"></script>
+</body>
+
+</html>

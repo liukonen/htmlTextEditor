@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build-app": "terser ./docs/js/src/TextApp.js -c -m -o ./docs/js/app.min.js --config-file terser.config.json",
+    "build-beta": "terser ./docs/js/src/Beta.js -c -m -o ./docs/js/beta.min.js --config-file terser.config.json",
     "build-vk": "terser ./docs/js/src/vkbeautify.js -c -m -o ./docs/js/vkbeautify.min.js --config-file terser.config.json",
+    "build-vk2": "terser ./node_modules/vkbeautify/index.js -c -m -o ./docs/js/vkbeautify2.min.js --config-file terser.config.json",
     "build-worker": "terser ./docs/js/src/serviceWorker.js -c -m -o ./docs/serviceWorker.min.js --config-file terser.config.json",
     "build": "npm run build-app && npm run build-vk && npm run build-worker"
   },
@@ -14,6 +16,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "terser": "^5.31.6"
+    "terser": "^5.31.6",
+    "vkbeautify": "0.99.3"
   }
 }

@@ -2,7 +2,7 @@ const textbox = document.getElementById('TextBox1')
 const toolbar1 = document.getElementById('TextBox2')
 const toolbar2 = document.getElementById('TextBox3')
 
-const cachedItems  = "items"
+const cachedItems = "items"
 const toList = (text) => text.split(/\r?\n/)
 const replaceText = (requestTextbox, value, replacementValue) => requestTextbox.value.replace(value, replacementValue)
 const distinct = (list) => Array.from(new Set(list))
@@ -21,7 +21,23 @@ const keyUp = (txt) => {
   document.getElementById('RowsCount').textContent = rowsCount
 
 }
+const compressData = async (data) => {
+  const stream = new CompressionStream('gzip')
+  const writer = stream.writable.getWriter()
+  writer.write(new TextEncoder().encode(data))
+  writer.close()
+  return new Response(stream.readable).arrayBuffer()
+}
 
+const decompressData = async (compressedData) => {
+  const stream = new DecompressionStream('gzip')
+  const writer = stream.writable.getWriter()
+  writer.write(compressedData)
+  writer.close()
+  return new Response(stream.readable).arrayBuffer().then(buffer =>
+    new TextDecoder().decode(buffer)
+  )
+}
 const debounce = (func, delay) => {
   let timeoutId
   return () => {
@@ -88,9 +104,30 @@ const removeXMLNamespace = () => {
 
 const beautify = (type) => {
   try {
-    textbox.value = vkbeautify[type](textbox.value)
+
+    // if textbox2 has value and its a number between 1 and 10 use it as the "step value" else default to 4
+    const value = Number(toolbar2.value);
+
+    const step = Number.isFinite(value) && value >= 1 && value <= 8 ? value : 2
+
+    textbox.value = vkbeautify[type](textbox.value, step)
     keyUp(textbox)
   } catch (err) {
+    alert(err.message)
+  }
+}
+
+const minify = (type) => {
+  const funcName = type.toLowerCase() + 'min';
+  try {  
+    const func = vkbeautify[funcName];
+    if (funcName === 'xmlmin' || funcName === 'cssmin' || funcName === 'sqlmin') {
+      textbox.value = func(textbox.value, false);
+    } else {
+      textbox.value = func(textbox.value);
+    }
+  }
+  catch (err) {
     alert(err.message)
   }
 }
@@ -179,11 +216,12 @@ const downloadContent = (content, extension) => {
   downloadLink.download = filename
   document.body.appendChild(downloadLink)
   downloadLink.click()
-  document.body.removeChild(downloadLink)
+  downloadLink.remove()
   URL.revokeObjectURL(url)
 }
 
 const saveToCache = async () => {
+  console.log("Saving to Cache")
   const ExistingStorage = await readCache()
   ExistingStorage.push({ key: dateString(), value: textbox.value })
 
@@ -217,7 +255,7 @@ const extractLists = () => {
   return lists3.map(list => list.split('\n').filter(item => item.trim() !== '')).filter(list => list.length > 0)
 }
 
- const getLists = () => {
+const getLists = () => {
   const Lines = toList(textbox.value)
   const list1 = []
   const list2 = []
@@ -239,7 +277,7 @@ const getUniqueItemsFromArrays = (arrays) => {
   return uniqueItems
 }
 
-const readCache = async() => {
+const readCache = async () => {
   let compressed = localStorage.getItem(cachedItems);
   if (compressed) {
     const decompressed = await decompressData(Uint8Array.from(atob(compressed), c => c.charCodeAt(0)));
@@ -256,15 +294,19 @@ const readCache = async() => {
   return [];
 }
 
-  const refreshCacheDropdown = async () => {
+const refreshCacheDropdown = async () => {
+  console.log("Refreshing Cache Dropdown")
   const Doc = document.getElementById("CacheList")
+  console.log("Document Element: ", Doc)
   const ExistingStorage = await readCache()
   const temp = document.getElementsByTagName("template")[0]
-
+  console.log("Template Element: ", temp)
+  
   Doc.textContent = ""
-  item = temp.content.querySelector("a")
+  const item = temp.content.querySelector("a")
+  console.log("Existing Storage: ", ExistingStorage)
   for (i = 0; i < ExistingStorage.length; i++) {
-    a = document.importNode(item, true)
+    const a = document.importNode(item, true)
     a.textContent = ExistingStorage[i].key
     a.setAttribute('onclick', "readItem('" + ExistingStorage[i].key + "')")
     Doc.appendChild(a)
@@ -276,7 +318,7 @@ document.getElementById('OpenFile').addEventListener('change', (eventItem) => {
   let file = eventItem.target.files[0]
   if (!file) { return }
   let reader = new FileReader()
-  reader.onload =  (event) => { textbox.value = event.target.result }
+  reader.onload = (event) => { textbox.value = event.target.result }
   reader.readAsText(file)
 })
 
@@ -290,7 +332,7 @@ textbox.addEventListener('drop', (eventItem) => {
   eventItem.stopPropagation()
   eventItem.preventDefault()
   let reader = new FileReader()
-  reader.onload =  (event) => { textbox.value = event.target.result }
+  reader.onload = (event) => { textbox.value = event.target.result }
   reader.readAsText(eventItem.dataTransfer.files[0])
 }, false)
 
@@ -310,7 +352,7 @@ window.onload = async (event) => {
 }
 
 let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
-let tooltipList = tooltipTriggerList.map((tooltipTriggerEl)  => new bootstrap.Tooltip(tooltipTriggerEl))
+let tooltipList = tooltipTriggerList.map((tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl))
 
 
 document.getElementById("btnSwitch").addEventListener("click", () => {
@@ -329,7 +371,7 @@ document.addEventListener("DOMContentLoaded", () => {
       buttonGroup.classList.remove('btn-group-vertical')
     }
   }
-  
+
   const darkThemeMq = window.matchMedia("(prefers-color-scheme: dark)")
   let currentTheme = localStorage.getItem("theme")
   if (!currentTheme && darkThemeMq.matches) { currentTheme = "dark" }
@@ -347,20 +389,3 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./serviceWorker.min.js")
 }
 
-const compressData = async (data) => {
-  const stream = new CompressionStream('gzip')
-  const writer = stream.writable.getWriter()
-  writer.write(new TextEncoder().encode(data))
-  writer.close()
-  return new Response(stream.readable).arrayBuffer()
-}
-
-const decompressData = async (compressedData) => {
-  const stream = new DecompressionStream('gzip')
-  const writer = stream.writable.getWriter()
-  writer.write(compressedData)
-  writer.close()
-  return new Response(stream.readable).arrayBuffer().then(buffer => 
-      new TextDecoder().decode(buffer)
-  )
-}
