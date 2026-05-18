@@ -220,26 +220,154 @@ const downloadContent = (content, extension) => {
   URL.revokeObjectURL(url)
 }
 
-const saveToCache = async () => {
-  console.log("Saving to Cache")
-  const ExistingStorage = await readCache()
-  ExistingStorage.push({ key: dateString(), value: textbox.value })
+// SAVE FUNCTIONALITY
+const DB_NAME = "HTMLTextEditorDB"
+const STORE = "cache"
+const DB_VERSION = 1
 
-  const compressed = await compressData(JSON.stringify(ExistingStorage));
-  localStorage.setItem(cachedItems, btoa(String.fromCharCode.apply(null, new Uint8Array(compressed))));
+
+// ---------- CONNECT DB ----------
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION)
+    req.onupgradeneeded = () => {
+      const db = req.result
+      if (!db.objectStoreNames.contains(STORE)) {
+        db.createObjectStore(STORE, { keyPath: "key" })
+      }
+    }
+    req.onsuccess = () => resolve(req.result)
+    req.onerror = () => reject(req.error)
+  })
+}
+
+
+const db = {
+  async put(item) {
+    const database = await openDB()
+    const tx = database.transaction(STORE, "readwrite")
+    tx.objectStore(STORE).put(item)
+  },
+
+  async getAll() {
+    const database = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx = database.transaction(STORE, "readonly")
+      const req = tx.objectStore(STORE).getAllKeys()
+      console.log("Request: ", req)
+      req.onsuccess = () => resolve(req.result || [])
+      req.onerror = () => reject(req.error)
+    })
+  },
+
+  async get(key) {
+    const database = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx = database.transaction(STORE, "readonly")
+      const req = tx.objectStore(STORE).get(key)
+      req.onsuccess = () => resolve(req.result || null)
+      req.onerror = () => reject(req.error)
+    })
+  },
+
+  async delete(key) {
+    const database = await openDB()
+    const tx = database.transaction(STORE, "readwrite")
+    tx.objectStore(STORE).delete(key)
+  },
+
+  async clear() {
+    const database = await openDB()
+    const tx = database.transaction(STORE, "readwrite")
+    tx.objectStore(STORE).clear()
+  }
+}
+
+
+const readCache = async () => {
+  const idbData = await db.getAll()
+  console.log("IDB Data: ", idbData)
+  let lsData = []
+  const raw = localStorage.getItem(cachedItems)
+  if (raw) {
+    try {
+      const decompressed = await decompressData(
+        Uint8Array.from(atob(raw), c => c.charCodeAt(0))
+      )
+      lsData = JSON.parse(decompressed)
+    } catch (e) {
+      console.warn("localStorage decode failed", e)
+    }
+  }
+  const map = new Map();
+  for (const item of lsData) map.set(item.key, item)
+  for (const item of idbData) map.set(item, {"key": item })
+  return Array.from(map.values())
+}
+
+
+const saveToCache = async () => {
+  const item = {
+    key: dateString(),
+    value: await compressData(textbox.value), 
+  }
+  await db.put(item)
   await refreshCacheDropdown()
 }
 
+
+const readItem = async (key) => {
+  const idb = await db.get(key)
+  if (idb) {
+    textbox.value = await decompressData(idb.value)
+    return
+  }
+  const all = await readCache()
+  const item = all.find(x => x.key === key)
+  if (item) textbox.value = item.value
+}
+
+const refreshCacheDropdown = async () => {
+  const doc = document.getElementById("CacheList")
+  const data = await readCache()
+  doc.textContent = ""
+  const temp = document.getElementsByTagName("template")[0]
+  const item = temp.content.querySelector("a")
+  for (const storageItem of data) {
+    const a = document.importNode(item, true)
+    a.textContent = storageItem.key
+    a.setAttribute("onclick", `readItem('${storageItem.key}')`)
+    doc.appendChild(a)
+  }
+}
+
+const removeMe = async (event) => {
+  const target = event.currentTarget
+  if (!confirm("Are you sure you want to remove this item?")) return
+  const key = target.textContent
+  // remove from IndexedDB
+  await db.delete(key)
+
+  // remove from localStorage legacy
+  let existing = await readCache()
+  existing = existing.filter(item => item.key !== key)
+
+  const compressed = await compressData(JSON.stringify(existing))
+
+  localStorage.setItem(
+    cachedItems,
+    btoa(String.fromCharCode(...new Uint8Array(compressed)))
+  );
+  target.remove()
+}
+
 const clearCache = async () => {
+  await db.clear()
   localStorage.removeItem(cachedItems)
   await refreshCacheDropdown()
 }
 
-const readItem = async (s) => {
-  const ExistingStorage = await readCache()
-  const X = ExistingStorage.filter(item => item.key == s)[0]
-  textbox.value = X.value
-}
+// END SAVE
 
 //HELPERS
 const dateString = () => {
@@ -275,42 +403,6 @@ const getUniqueItemsFromArrays = (arrays) => {
   }
   const uniqueItems = Object.keys(itemCounts).filter(item => itemCounts[item] === 1)
   return uniqueItems
-}
-
-const readCache = async () => {
-  let compressed = localStorage.getItem(cachedItems);
-  if (compressed) {
-    const decompressed = await decompressData(Uint8Array.from(atob(compressed), c => c.charCodeAt(0)));
-    return JSON.parse(decompressed);
-  }
-
-  const original = localStorage.getItem('CachedItems')
-  if (original) {
-    const compressed = await compressData(original);
-    localStorage.setItem(cachedItems, btoa(String.fromCharCode.apply(null, new Uint8Array(compressed))));
-    localStorage.removeItem('CachedItems')
-    return JSON.parse(original)
-  }
-  return [];
-}
-
-const refreshCacheDropdown = async () => {
-  console.log("Refreshing Cache Dropdown")
-  const Doc = document.getElementById("CacheList")
-  console.log("Document Element: ", Doc)
-  const ExistingStorage = await readCache()
-  const temp = document.getElementsByTagName("template")[0]
-  console.log("Template Element: ", temp)
-  
-  Doc.textContent = ""
-  const item = temp.content.querySelector("a")
-  console.log("Existing Storage: ", ExistingStorage)
-  for (i = 0; i < ExistingStorage.length; i++) {
-    const a = document.importNode(item, true)
-    a.textContent = ExistingStorage[i].key
-    a.setAttribute('onclick', "readItem('" + ExistingStorage[i].key + "')")
-    Doc.appendChild(a)
-  }
 }
 
 //document event handles
@@ -388,4 +480,6 @@ document.addEventListener("DOMContentLoaded", () => {
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./serviceWorker.min.js")
 }
+
+
 
