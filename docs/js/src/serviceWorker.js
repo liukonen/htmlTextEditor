@@ -45,7 +45,7 @@ self.addEventListener('fetch', function (event) {
         }
         var responseClone = response.clone()
         caches.open('my-cache').then(function (cache) {
-          if (request.url.match("^(http|https)://")) {
+          if (event.request.url.match("^(http|https)://")) {
             cache.put(event.request, responseClone)
           } else { return }
         })
