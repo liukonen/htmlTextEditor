@@ -15,7 +15,7 @@ const parseText = (text, parseItem) => fromList(text.split(new RegExp(`(?=${pars
 
 const keyUp = (txt) => {
   const value = txt.value
-  const charCount = value.replace(/ /g, '').length
+  const charCount = value.replaceAll(' ', '').length
   const rowsCount = (value.match(/\n/g) || []).length + 1
   document.getElementById('CharCount').textContent = charCount
   document.getElementById('RowsCount').textContent = rowsCount
@@ -104,12 +104,8 @@ const removeXMLNamespace = () => {
 
 const beautify = (type) => {
   try {
-
-    // if textbox2 has value and its a number between 1 and 10 use it as the "step value" else default to 4
     const value = Number(toolbar2.value);
-
     const step = Number.isFinite(value) && value >= 1 && value <= 8 ? value : 2
-
     textbox.value = vkbeautify[type](textbox.value, step)
     keyUp(textbox)
   } catch (err) {
@@ -149,7 +145,7 @@ const getMatchingItemsFromLists = () => {
 const speak = () => {
   const msg = new SpeechSynthesisUtterance()
   msg.text = textbox.value
-  window.speechSynthesis.speak(msg)
+  this.speechSynthesis.speak(msg)
 }
 
 //BOTTOM ROW
@@ -167,13 +163,13 @@ const txtParse = () => {
 
 const insertStart = () => {
   const toolbarText = toolbar1.value
-  textbox.value = toolbarText + textbox.value.replace(/\n/g, '\n' + toolbarText)
+  textbox.value = toolbarText + textbox.value.replaceAll('\n', '\n' + toolbarText)
   keyUp(textbox)
 }
 
 const insertEnd = () => {
   const toolbarText = toolbar1.value
-  textbox.value = textbox.value.replace(/\n/g, toolbarText + '\n') + toolbarText
+  textbox.value = textbox.value.replaceAll('\n', toolbarText + '\n') + toolbarText
   keyUp(textbox)
 }
 
@@ -205,6 +201,7 @@ const downloadFile = (extension) => {
     alert(err.message)
   }
 }
+
 const generateFilename = (extension) => `output_${dateString()}.${extension}`
 
 const downloadContent = (content, extension) => {
@@ -292,7 +289,7 @@ const readCache = async () => {
   if (raw) {
     try {
       const decompressed = await decompressData(
-        Uint8Array.from(atob(raw), c => c.charCodeAt(0))
+        Uint8Array.from(atob(raw), c => c.codePointAt(0))
       )
       lsData = JSON.parse(decompressed)
     } catch (e) {
@@ -345,18 +342,13 @@ const removeMe = async (event) => {
   const target = event.currentTarget
   if (!confirm("Are you sure you want to remove this item?")) return
   const key = target.textContent
-  // remove from IndexedDB
   await db.delete(key)
-
-  // remove from localStorage legacy
   let existing = await readCache()
   existing = existing.filter(item => item.key !== key)
-
   const compressed = await compressData(JSON.stringify(existing))
-
   localStorage.setItem(
     cachedItems,
-    btoa(String.fromCharCode(...new Uint8Array(compressed)))
+    btoa(String.fromCodePoint(...new Uint8Array(compressed)))
   );
   target.remove()
 }
@@ -383,19 +375,8 @@ const extractLists = () => {
   return lists3.map(list => list.split('\n').filter(item => item.trim() !== '')).filter(list => list.length > 0)
 }
 
-const getLists = () => {
-  const Lines = toList(textbox.value)
-  const list1 = []
-  const list2 = []
-  let HasHit = false
-  for (const line of Lines) {
-    if (line == '') { HasHit = true } //skip over all empty lines
-    else { if (HasHit) { list1.push(line) } else { list2.push(line) } }
-  }
-  return { L1: list1, L2: list2 }
-}
 
-const getUniqueItemsFromArrays = (arrays) => {
+const getUniqueItemsFromArrays = (arrays) => { 
   const flattenedArray = arrays.flat()
   const itemCounts = {}
   for (const item of flattenedArray) {
@@ -409,9 +390,7 @@ const getUniqueItemsFromArrays = (arrays) => {
 document.getElementById('OpenFile').addEventListener('change', (eventItem) => {
   let file = eventItem.target.files[0]
   if (!file) { return }
-  let reader = new FileReader()
-  reader.onload = (event) => { textbox.value = event.target.result }
-  reader.readAsText(file)
+  file.text().then(text => { textbox.value = text })
 })
 
 textbox.addEventListener('dragover', (eventItem) => {
@@ -423,9 +402,7 @@ textbox.addEventListener('dragover', (eventItem) => {
 textbox.addEventListener('drop', (eventItem) => {
   eventItem.stopPropagation()
   eventItem.preventDefault()
-  let reader = new FileReader()
-  reader.onload = (event) => { textbox.value = event.target.result }
-  reader.readAsText(eventItem.dataTransfer.files[0])
+  eventItem.dataTransfer.files[0].text().then(text => { textbox.value = text })
 }, false)
 
 //Saves the data to local seasion storage before the refresh button is history
@@ -443,43 +420,14 @@ window.onload = async (event) => {
   await refreshCacheDropdown()
 }
 
-let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
-let tooltipList = tooltipTriggerList.map((tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl))
-
-
 document.getElementById("btnSwitch").addEventListener("click", () => {
-  let invertedTheme = (document.documentElement.getAttribute("data-bs-theme") == "dark") ? "light" : "dark"
-  document.documentElement.setAttribute("data-bs-theme", invertedTheme)
+  let invertedTheme = (document.documentElement.dataset.bsTheme == "dark") ? "light" : "dark"
+  document.documentElement.dataset.bsTheme = invertedTheme
   localStorage.setItem("theme", invertedTheme)
 })
 
-document.addEventListener("DOMContentLoaded", () => {
-  const adjustLayout = () => {
-    let windowWidth = window.innerWidth
-    let buttonGroup = document.getElementById('button-group')
-    if (windowWidth >= 770) {
-      buttonGroup.classList.add('btn-group-vertical')
-    } else {
-      buttonGroup.classList.remove('btn-group-vertical')
-    }
-  }
 
-  const darkThemeMq = window.matchMedia("(prefers-color-scheme: dark)")
-  let currentTheme = localStorage.getItem("theme")
-  if (!currentTheme && darkThemeMq.matches) { currentTheme = "dark" }
-  if (currentTheme) {
-    document.documentElement.setAttribute(
-      "data-bs-theme",
-      currentTheme
-    )
-  }
-  adjustLayout()
-  window.addEventListener('resize', () => { adjustLayout() })
-})
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./serviceWorker.min.js")
 }
-
-
-

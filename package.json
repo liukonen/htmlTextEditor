@@ -1,5 +1,5 @@
 {
-  "name": "htmlTextEditor",
+  "name": "html-text-editor",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,7 +10,9 @@
     "build-vk": "terser ./docs/js/src/vkbeautify.js -c -m -o ./docs/js/vkbeautify.min.js --config-file terser.config.json",
     "build-vk2": "terser ./node_modules/vkbeautify/index.js -c -m -o ./docs/js/vkbeautify2.min.js --config-file terser.config.json",
     "build-worker": "terser ./docs/js/src/serviceWorker.js -c -m -o ./docs/serviceWorker.min.js --config-file terser.config.json",
-    "build": "npm run build-app && npm run build-vk && npm run build-worker"
+    "build-legacy": "terser ./docs/js/src/legacy.js -c -m -o ./docs/js/legacy.min.js --config-file terser.config.json",
+    "build": "npm run build-app && npm run build-vk && npm run build-worker",
+    "build-all": "npm run build-app && npm run build-vk && npm run build-worker && npm run build-legacy && npm run build-beta"
   },
   "keywords": [],
   "author": "",

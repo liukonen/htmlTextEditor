@@ -2,7 +2,7 @@
 self.addEventListener('install', function (event) {
   event.waitUntil(
     caches.open('my-cache').then(function (cache) {
-      return cache.addAll([
+      const urlsToCache = [
         'favicon.ico',
         'img/android-chrome-192x192.png',
         'img/android-chrome-512x512.png',
@@ -20,14 +20,21 @@ self.addEventListener('install', function (event) {
         'js/vkbeautify.min.js',
         'manifest.json',
         'js/app.min.js',
-        'https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css',
-        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
-        'https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js',
-        'https://fonts.cdnfonts.com/s/29131/Cascadia.woff',
-        'https://fonts.cdnfonts.com/css/cascadia-code'
-
-        // Add more files to cache as needed
-      ])
+        'css/editor.min.css'
+      ]
+      
+      // Cache each file individually to handle failures gracefully
+      return Promise.all(
+        urlsToCache.map(function (url) {
+          return fetch(url)
+            .then(function (response) {
+              return cache.put(url, response)
+            })
+            .catch(function (error) {
+              console.warn('Failed to cache ' + url, error)
+            })
+        })
+      )
     })
   )
 })
@@ -43,7 +50,7 @@ self.addEventListener('fetch', function (event) {
         if (!response || response.status !== 200 || response.type !== 'basic') {
           return response;
         }
-        var responseClone = response.clone()
+        const responseClone = response.clone()
         caches.open('my-cache').then(function (cache) {
           if (event.request.url.match("^(http|https)://")) {
             cache.put(event.request, responseClone)
